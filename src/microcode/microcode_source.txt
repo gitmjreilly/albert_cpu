@@ -1,0 +1,1136 @@
+# Set your tab stops to 3 for best viewing
+#
+# 20071020
+# Added SRA and SRL instructions.
+#
+# Microcode instruction set for forth instructions.
+# This code supports architecture described in Tanenbaum's architecture book for the
+# mic1.
+#
+#
+
+###############################################################################
+Main:	ena_pc; setalu INCA; load_pc; fetch; gotombr
+###############################################################################
+
+
+###############################################################################
+# RESET OpCode
+# This used to be NOP, but a lot needs to happen at startup
+# so this is now the "reset" opcode.
+# As opcode zero, this code will be executed upon machine reset.
+# Tested 3/21/2006
+#
+# Val : 0
+#
+
+	# Point the PSP and RSP someplace useful.
+	#
+RESET:	setalu MINUS_1; setshifter SLL8; load_sp
+
+	setalu MINUS_1; load_rsp
+	ena_rsp; setalu DECA; setshifter SLL8; load_rsp
+
+	# mbr should have opcode before jumping to main loop.
+	# See Fetch below.
+	#
+	setalu ZERO; load_pc; fetch;
+	goto Main
+###############################################################################
+
+
+###############################################################################
+# Val : 1
+#
+
+NOP:	goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 2
+# DO_LIT
+# Takes next word in instruction stream (which is already in MBR) and
+# pushes it on to the pstack.  The PSP is assumed to point at the free location
+# at the top of the stack.
+# 
+# Tested 3/23/2006
+#
+
+
+	#
+	# The ptos reflects the current ptos.
+	# After this instruction, the current ptos must be in
+	# RAM because there will be a new ptos.
+	#
+DO_LIT:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+
+	#
+	# The mbr is loaded from main.  It is the literal we want on top of the rstack.
+	#
+	ena_mbr; setalu A; load_ptos
+
+	#
+	# We consumed the mbr as a literal so we need to setup the pc and mbr again.
+	#
+	ena_pc; setalu INCA; load_pc; fetch
+
+	ena_psp; setalu INCA; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+# Val : 3
+# Tested too many times to count
+#
+
+HALT:	goto HALT
+###############################################################################
+
+	
+###############################################################################
+#
+# Val :
+# #
+# Tested 13 April 2006
+#
+
+BRANCH:	micronop
+	ena_mbr; setalu A; load_pc; fetch 
+	goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val :
+# Tested 14 April 2006
+# 
+# LESS
+# if PNTOS < PTOS ret TRUE (all ones) else ret FALSE
+# 
+#
+# UNTESTED
+#
+
+
+	#
+	# Get PNTOS.  It needs to be in h.
+	# 
+LESS:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+
+	# This instruction was added so opcodes maintain same value - Don't ask.
+	#
+	micronop
+	micronop
+
+	ena_mdr; setalu A_MINUS_B; jmpn LESS_TRUE_1 LESS_FALSE_1
+
+	#
+	# NOTHING else needed. stmt above has jumped away to one of the
+	# two conditionals below.
+	#
+
+#
+# This code is entered as a result of a conditional in the LESS opcode
+#
+LESS_TRUE_1:	setalu MINUS_1; load_ptos;	goto Main
+
+
+#
+# This code is entered as a result of a conditional in the LESS opcode
+#
+LESS_FALSE_1:	setalu ZERO; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# PLUSPLUS
+# TOS is address of var.
+# Pop stack; increment variable pointed to by TOS
+#
+# Tested 14 April 2006
+#
+
+
+	#
+	# Get the var pointed to by the TOS and increment it.
+PLUSPLUS:	ena_ptos; setalu A; load_mar; read
+	micronop
+	ena_mdr; setalu INCA; load_mdr; write
+
+	# Reload the TOS cache
+	ena_psp; setalu DECA; load_mar; load_psp; read 
+	micronop
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# DROP
+# Tested 3/23/2006
+#
+
+
+DROP:	ena_psp; setalu DECA; load_mar; load_sp; read
+
+	micronop
+
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# STORE
+# Store NTOP at addr on TOS
+# Tested 3/23/2006
+# 
+
+
+	# Get NTOP.  It is one entry below the top
+STORE:	ena_sp; setalu DECA; load_mar; load_sp; read
+
+
+	# TOS Contains addr, copy it to MAR
+	# On this instruction's rising edge, MDR will have NTOP
+	#
+	ena_tos; setalu A; load_mar; write
+
+	# Reload the PTOS
+	ena_psp; setalu DECA; load_mar; load_psp; read
+	micronop
+	ena_mdr; setalu A; load_ptos; goto Main
+
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# FETCH
+# Tested 3/23/2006
+# 
+
+FETCH:	ena_ptos; setalu A; load_mar; read
+	micronop
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# JSR
+# Tested on April 1st, 2006
+# 
+
+	#
+	# Update the rstack first
+	#
+JSR:	ena_rtos; setalu A; load_mdr
+	ena_rsp; setalu A; load_mar; write
+	ena_rsp; setalu INCA; load_rsp
+
+	#
+	# Save the PC on the rstack (skipping over
+	# the destination address.
+	#
+	ena_pc; setalu INCA; load_rtos
+
+	#
+	# Fetch the new opcode
+	#
+	ena_mbr; setalu A; load_pc; fetch
+	goto Main
+
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# RET
+# Tested 3/24/2006
+# 
+
+RET:	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	ena_rtos; setalu A; load_pc; fetch
+	ena_mdr; setalu A; load_rtos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# DOWHILE (aka BRANCH on FALSE, aka BRANCH ZERO)
+# 		If there is false on PTOS, branch to (inline) address.
+# 
+# Tested too many times to count!
+# 
+
+DOWHILE:	ena_ptos; setalu A; jmpz dowhile_true_1 dowhile_false_1
+
+
+
+	# We arrived here because there was a (FORTH zero) FALSE on the PTOS
+dowhile_true_1:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_mbr; setalu A; load_pc; fetch
+	ena_mdr; setalu A; load_ptos; goto Main
+
+
+	# We arrived here because there was a (FORTH non zero) TRUE on the PTOS
+dowhile_false_1:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_pc; setalu INCA; load_pc; fetch
+	ena_mdr; setalu A; load_ptos; goto Main
+
+
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# >R (aka TO_R)
+# (x --)
+#		Pop from pstack; push onto rstack
+# 
+
+
+	# Save current RTOS
+TO_R:	ena_rtos; setalu A;load_mdr
+	ena_rsp; setalu A; load_mar; write
+	ena_rsp; setalu INCA; load_rsp
+
+	ena_ptos; setalu A; load_rtos
+
+	# Reload PTOS now that "POP" has happened.
+	ena_psp; setalu DECA; load_psp; load_mar; read
+	micronop
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# R> (aka FROM_R)
+# (-- x)
+#		Pop from rstack; push onto pstack
+# 
+
+
+	# Save current PTOS
+FROM_R:	ena_ptos; setalu A;load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_psp; setalu INCA; load_psp
+
+	ena_rtos; setalu A; load_ptos
+
+	# Reload RTOS now that "POP" has happened.
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop
+	ena_mdr; setalu A; load_rtos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# RP@ (AKA RP_FETCH)
+# (-- x)
+#		Push RSP onto pstack
+#
+
+	# Save old PTOS 
+RP_FETCH:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_rsp; setalu A; load_ptos
+	ena_psp; setalu INCA; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+#
+# RP! (AKA RP_STORE)
+#		(x --)
+#		RSP gets PTOS
+#
+
+RP_STORE:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_rsp
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+#
+# R@ (AKA R_FETCH)
+#		(-- x)
+#		copy RTOS - push onto PTOS
+#
+
+	# Save old PTOS
+R_FETCH:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_psp; setalu INCA; load_psp
+	ena_rtos; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+#
+# DUP (x -- x x)
+#
+
+DUP:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_psp; setalu INCA; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+#
+# SP@ (AKA SP_FETCH)
+#		( -- x)
+#		push psp onto ptos
+#
+
+SP_FETCH:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_psp; setalu A; load_ptos
+	ena_psp; setalu INCA; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# SWAP
+#		(a b -- b a)
+#
+
+SWAP:	ena_psp; setalu DECA; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_mdr; setalu A; load_ptos;
+	#
+	# setalu B is equivalent to "ena_h"
+	#
+	setalu B; load_mdr; write; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# OVER
+#		(a b -- a b a)
+# 		OVER consists of 7 microinstructions.  One uses reg tmp1
+#		which was later used as the intctl reg.  Therefore this 
+#		code must be modified to not use tmp1 and remain 7 instructions long
+#		so opcode values are not altered. - Jamet 17 March 2007
+#
+
+
+	#
+	# Get a local copy of "a" first because
+	# soon it will be PTOS
+	#
+#	ena_psp; setalu DECA; load_mar; read
+#	micronop
+#	ena_mdr; setalu A; load_tmp1
+
+	#
+	# Save "b" in RAM because it becomes PNTOS
+	#
+#	ena_ptos; setalu A; load_mdr
+#	ena_psp; setalu A; load_mar; write
+#	ena_psp; setalu INCA; load_psp
+
+#	ena_tmp1; setalu A; load_ptos; goto Main
+
+	#
+	# New code which does not use tmp1 reg
+	#
+	
+	# Save b to RAM because it becomes PNTOS
+	#
+OVER:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+
+	# Get "a" from RAM because it we become PTOS
+	#
+	ena_psp; setalu DECA; load_mar; read
+	ena_psp; setalu INCA; load_psp
+	ena_mdr; setalu A; load_ptos
+
+	micronop
+
+	goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# SP! (AKA SP Store)
+#		
+#
+
+SP_STORE:	ena_ptos; setalu A; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# + (AKA PLUS)
+# Tested OK on 4/8/2006
+#		
+#
+
+PLUS:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_mdr; setalu ADD; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# - (AKA SUB)
+#		( a b -- a-b)
+#		
+#
+
+SUB:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_mdr; setalu A_MINUS_B; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 0< (NEG)
+#		( n -- f)
+# 		Return True if neg
+#		
+#
+
+NEG:	ena_ptos; setalu A; jmpn NEG_TRUE_1 NEG_FALSE_1
+
+NEG_TRUE_1:	setalu MINUS_1; load_ptos; goto Main
+
+NEG_FALSE_1:	setalu ZERO; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+#
+# AND		
+# Tested OK on 4/8/2006
+#
+
+AND:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_mdr; setalu A_AND_B; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# OR
+#
+
+OR:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_mdr; setalu A_OR_B; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# XOR
+# Untested
+#
+
+XOR:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_mdr; setalu A_XOR_B; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# MUL
+# Tested 8 April 2006
+#
+
+MUL:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_mdr; setalu A_MUL_B; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val :
+# 
+# = (AKA EQUAL)
+# if PNTOS = PTOS ret TRUE (all ones) else ret FALSE
+# 
+#
+# Tested OK on 4/8/2006
+#
+
+	#
+	# Get PNTOS.
+	# 
+EQUAL:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+
+	#
+	# At this point PNTOS is in MDR and PTOS is in H
+	#
+	ena_mdr; setalu B_MINUS_A; jmpz EQUAL_TRUE_1 EQUAL_FALSE_1
+
+	#
+	# NOTHING else needed. stmt above has jumped away to one of the
+	# two conditionals below.
+	#
+
+#
+# This code is entered as a result of a conditional in the EQUAL opcode
+#
+EQUAL_TRUE_1:	setalu MINUS_1; load_ptos; goto Main
+
+#
+# This code is entered as a result of a conditional in the EQUAL opcode
+#
+EQUAL_FALSE_1:	setalu ZERO; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# UM+ (AKA UM_PLUS)
+# Tested April 8th, 2006
+#		
+#
+
+UM_PLUS:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_h
+	ena_psp; setalu INCA; load_psp;
+	ena_mdr; setalu ADD; load_mdr; write; jmpy UM_PLUS_TRUE_1 UM_PLUS_FALSE_1
+
+
+#
+# This code is entered as a result of a conditional in the UM+ opcode
+#
+UM_PLUS_TRUE_1:	setalu ONE; load_ptos; goto Main
+
+#
+# This code is entered as a result of a conditional in the UM+ opcode
+#
+UM_PLUS_FALSE_1:	setalu ZERO; load_ptos; goto Main
+###############################################################################
+
+###############################################################################
+# This instruction is called automatically by the CPU when an external 
+# interrupt occurs. Its opcode is hardwired into the CPU logic
+#
+# It pushes CS, PC and IntCTL_low onto the return stack, disables interrupts
+# and branches to $FD00
+#
+# 
+
+	# Save DS to RAM
+	# We also save it to h so we can have the original RSP
+	# for storage.
+JSRINT:	ena_rsp; setalu A; load_mar; load_h
+	ena_ds; setalu A; load_mdr; write
+
+	# Save CS to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_cs; setalu A; load_mdr; write
+
+	# Save ES to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_es; setalu A; load_mdr; write
+
+	# Save PSP to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_psp; setalu A; load_mdr; write
+
+	# Save PTOS to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_ptos; setalu A; load_mdr; write
+
+	# Save PC to RAM
+	# Note we save PC-1 because the instruction at PC 
+	# never got to run.
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_pc; setalu DECA; load_mdr; write
+
+	# Save FLAGS to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_intctl; setalu A; load_mdr; write
+
+	# Save the original RSP (stored in h) to RAM
+	#
+	# setalu B is equivalent to "ena_h"
+	#
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	setalu B; load_mdr; write
+
+	ena_rsp; setalu INCA; load_rsp
+
+	# No need to save RTOS; it is fine where it is.
+
+	#####################################
+	# At this point everything is saved.
+	#####################################
+
+	# Set up the new interrupt vector 0000:FD00
+	setalu ZERO; load_cs; load_es
+
+	setalu MINUS_1; load_pc
+	ena_pc; setalu DECA; load_pc
+	ena_pc; setalu DECA; setshifter SLL8; load_pc; fetch
+
+	#
+	# Disable Interrupts, and we can go to main at the same time
+	#
+	setalu ZERO; load_intctl_low; goto Main
+###############################################################################
+
+
+
+###############################################################################
+#
+# Push order was DS, CS, ES, PSP, PTOS, PC, FLAGS (aka intctl_low), RSP, RTOS
+# 
+#
+
+	# We do not have to restore RTOS; it is fine where it is
+	# independent of the segment registers.
+	
+	# Restore the old RSP, but store it in H for now so we can keep
+	# using the existing RSP to pop the rstack.
+RETI:	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_h
+	
+	# Restore the Flags
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_intctl_low
+
+	# Restore the PC
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_pc
+
+	# Restore the PTOS
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_ptos
+
+	# Restore the PSP
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_psp
+
+	# Restore the ES
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_es
+
+	# Restore the CS
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_cs
+
+	# Restore the DS
+	ena_rsp; setalu DECA; load_rsp; load_mar; read
+	micronop;
+	ena_mdr; setalu A; load_ds; fetch
+
+	setalu B; load_rsp; goto Main
+
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# 
+# EI
+# 
+
+EI:	setalu ONE; load_intctl_low; goto Main
+###############################################################################
+
+###############################################################################
+#
+# Val : 
+# 
+# DI
+# 
+
+DI:	setalu ZERO; load_intctl_low; goto Main
+###############################################################################
+
+
+###############################################################################
+# 
+
+SRA:	ena_ptos; setalu A; setshifter SRA1; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+# 
+
+SLL:	ena_ptos; setalu A; setshifter SLL1; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+# 
+
+SRL:	ena_ptos; setalu SRL_A; load_ptos; goto Main
+###############################################################################
+
+###############################################################################
+# 
+
+TO_ES:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_es
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+# 
+
+TO_DS:	ena_psp; setalu DECA; load_psp; load_mar; read
+	ena_ptos; setalu A; load_ds
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Push contents of ES onto PStack
+#
+
+ES_FETCH:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_psp; setalu INCA; load_psp
+	ena_es; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Push contents of DS onto PStack
+#
+
+DS_FETCH:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_psp; setalu INCA; load_psp
+	ena_ds; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Push contents of ES onto PStack
+#
+
+CS_FETCH:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+	ena_psp; setalu INCA; load_psp
+	ena_cs; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+# Do FETCH (implicitly using ES)
+
+LONG_FETCH:	ena_ptos; setalu A; load_mar; read; use_es
+	micronop
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+# STORE (implicitly using ES)
+# 	e.g. val addr  LONG_STORE
+# 	Memory[addr + ES << 4] = val
+#
+
+
+	# Get NTOP.  It is one entry below the top
+LONG_STORE:	ena_sp; setalu DECA; load_mar; load_sp; read
+
+
+	# TOS Contains addr, copy it to MAR
+	# On this instruction's rising edge, MDR will have NTOP
+	#
+	ena_tos; setalu A; load_mar; write; use_es
+
+	# Reload the PTOS
+	ena_psp; setalu DECA; load_mar; load_psp; read
+	micronop
+	ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+
+
+###############################################################################
+# Similar to JSRINT but is meant to be called by the programmer
+#
+# and branches to $FD02
+# When this instruction completes, the RSP should be 8 greater than 
+# upon entry.
+#
+# 
+
+	# Save DS to RAM
+	# We also save it to h so we can have the original RSP
+	# for storage.
+SYSCALL:	ena_rsp; setalu A; load_mar; load_h
+	ena_ds; setalu A; load_mdr; write
+
+	# Save CS to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_cs; setalu A; load_mdr; write
+
+	# Save ES to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_es; setalu A; load_mdr; write
+
+	# Save PSP to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_psp; setalu A; load_mdr; write
+
+	# Save PTOS to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_ptos; setalu A; load_mdr; write
+
+	# Save PC to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_pc; setalu A; load_mdr; write
+
+	# Save FLAGS to RAM
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	ena_intctl; setalu A; load_mdr; write
+
+	# Save the original RSP (stored in h) to RAM
+	#
+	# setalu B is equivalent to "ena_h"
+	#
+	ena_rsp; setalu INCA; load_rsp; load_mar
+	setalu B; load_mdr; write
+
+	ena_rsp; setalu INCA; load_rsp
+
+	# No need to save RTOS; it is fine where it is.
+
+	#####################################
+	# At this point everything is saved.
+	#####################################
+
+	# Set up the new syscall vector 0000:FD02
+	setalu ZERO; load_cs; load_es
+
+	setalu MINUS_1; load_pc
+	ena_pc; setalu DECA; load_pc
+	ena_pc; setalu DECA; setshifter SLL8; load_pc
+
+	ena_pc; setalu INCA; load_pc
+	ena_pc; setalu INCA; load_pc; fetch
+
+	#
+	# Disable Interrupts, and we can go to main at the same time
+	#
+	setalu ZERO; load_intctl_low; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# Val : 
+# KSP! (AKA K_SP_Store)
+# implicitly sets DS to 0
+#		
+#
+
+K_SP_STORE:	setalu ZERO; load_ds
+	ena_ptos; setalu A; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# PUSHF - place the contents of the flags register onto the PSTACK
+#		
+#
+
+PUSHF:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+
+	ena_intctl; setalu A; load_ptos
+
+	ena_psp; setalu INCA; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# POPF - restore the flags from the PTOS
+#		
+#
+
+POPF:	ena_psp; setalu DECA; load_mar; load_sp; read
+
+	ena_ptos; setalu A; load_intctl_low
+
+	ena_mdr; setalu A; load_ptos; goto Main
+
+###############################################################################
+
+
+
+###############################################################################
+#
+# S_LESS (signed less)
+#    USAGE x y S_LESS
+# Returns true if x is less than y (when x, y are viewed as signed ints)
+# Consumes x, y along the way
+#
+
+    # Start retreiving x; It will be in mdr in 2 uInstructions
+S_LESS:	ena_psp; setalu DECA; load_psp; load_mar; read
+
+    # copy y to h so it will be the B input to the ALU
+	ena_ptos; setalu A; load_h
+    
+    # x is in mdr as ALU A input
+    # y is in h as   ALU B input
+	ena_mdr; setalu S_LESS; load_ptos; goto Main
+###############################################################################
+
+
+
+###############################################################################
+# 
+# L_VAR
+#    USAGE: L_VAR offset
+# Takes next word in instruction stream (which is already in MBR) and
+# uses it as the offset against the value in RTOS.
+# Used by high level languages where RTOS acts as BP and PTOS acts as relative
+# offset.  Result in PTOS is address of local var (RTOS + offset).
+#
+
+	#
+	# The ptos reflects the current top of the pstack
+	# After this instruction, the current top of stack must be in
+	# RAM because there will be a new top of stack in ptos.
+	#
+L_VAR:	ena_ptos; setalu A; load_mdr
+	ena_psp; setalu A; load_mar; write
+
+	#
+	# The mbr was loaded from MAIN before this instruction was entered.  
+    # It contains the literal right after the L_VAR instruction.
+    # It is this literal we want to add to RTOS.
+	#
+	ena_mbr; setalu A; load_h
+	ena_rtos; setalu ADD; load_ptos 
+
+	#
+	# We consumed the mbr as a literal so we need to setup the pc and mbr again.
+	#
+	ena_pc; setalu INCA; load_pc; fetch
+
+	ena_psp; setalu INCA; load_psp; goto Main
+###############################################################################
+
+
+###############################################################################
+#
+# STORE2
+#    USAGE: addr val STORE2
+#    starting conditions:
+#       addr is in mem[PSP - 1]
+#       val  is in PTOS
+#       new top of stack is mem[PSP - 2]
+#    final
+#       PTOS contains mem[PSP - 2]
+#       PSP is 2 less than start
+#       mem[addr] == val
+# 
+
+
+    # Get the ADDR to which we will store
+STORE2:	ena_psp; setalu DECA; load_mar; load_psp; read
+    # psp is now pointing at where ADDR is stored
+
+    # Set psp to where the new top of stack is in mem
+	ena_psp; setalu DECA; load_psp
+
+    # "read" from 2 steps ago is done.
+    # The ADDR is in mdr
+    ena_mdr; setalu A; load_mar
+
+    # The VAL we wish to write is in ptos.
+    # The ADDR we wish to write is in mar
+    # We're ready to write VAL to ADDR
+    ena_ptos; setalu A; load_mdr; write
+
+    # We need to retrieve the new top of stack which
+    # is pointed to by psp
+    ena_psp; setalu A; load_mar; read
+
+    # Forced to wait while "read" above completes...
+    micronop
+
+    # Update ptos to accurately reflect top of stack
+    ena_mdr; setalu A; load_ptos; goto Main
+###############################################################################
+

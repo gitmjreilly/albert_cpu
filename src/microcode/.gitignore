@@ -1,0 +1,10 @@
+# Ignore everything in this dir but the files necessary to rebuild microcode
+# We're ignoring the rest because it's possible temp files will end up here
+# We're assuming vivado builds will take place here
+*
+# We care about the files below
+!.gitignore
+!MicroAsm.py
+!OpcodeMap.txt
+!microcode_source.txt
+

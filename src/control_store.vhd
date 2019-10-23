@@ -1,9 +1,7 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-
 entity control_store is
     Port ( input : in std_logic_vector(8 downto 0);
            output : out std_logic_vector(40 downto 0));
