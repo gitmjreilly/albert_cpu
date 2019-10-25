@@ -41,11 +41,25 @@ entity system is port (
 --	ptc_uart_tx : out std_logic;
 --	ptc_uart_rx : in std_logic;
 	
-	sw: in std_logic_vector(7 downto 0);
-	led_output_port : out std_logic_vector(7 downto 0)
+	
+	out_bit_0 : out std_logic;
+	out_bit_1 : out std_logic;
+	out_bit_2 : out std_logic;
+	out_bit_3 : out std_logic;
+	out_bit_4 : out std_logic;
+	out_bit_5 : out std_logic;
+	out_bit_6 : out std_logic;
+	out_bit_7 : out std_logic;
 
-	
-	
+	in_bit_0 : in std_logic;
+	in_bit_1 : in std_logic;
+	in_bit_2 : in std_logic;
+	in_bit_3 : in std_logic;
+	in_bit_4 : in std_logic;
+	in_bit_5 : in std_logic;
+	in_bit_6 : in std_logic;
+	in_bit_7 : in std_logic
+
 );
 end system;
 
@@ -303,29 +317,49 @@ begin
 		);
 	
 	
-	
-	---------------------------------------------------------------------
-	-- Test output port - no actual use.
-	u_output_port_0 : process (my_clock, reset, data_bus)
-	begin
-		if (reset = '1') then
-			led_output_port <= X"33";
-		elsif (rising_edge(my_clock)) then
-			if (cpu_finish = '1' and n_wr_bus = '0' and cs_bus(BLANK_20_CS) = '0')  then
-				led_output_port <= data_bus(7 downto 0);
-			end if;
-		end if;
-	end process;
-	---------------------------------------------------------------------
-	
-	
-	-- ---------------------------------------------------------------------
-	 -- The logic below works for a simple, unbuffered input, no clock required.
-	 -- Test input port - no actual use
-	 input_port_0: data_bus <=
-		 X"00" & sw(7 downto 0)  when (n_rd_bus = '0' AND cs_bus(BLANK_40_CS) = '0') AND local_addr_bus(3 downto 0) = x"0000" else
-		 "ZZZZZZZZZZZZZZZZ";
-	-- ---------------------------------------------------------------------
+
+    ---------------------------------------------------------------------
+    u_output_port_0: entity work.mem_based_output_port 
+        port map (
+            reset => reset,
+            clk => my_clock,
+            cpu_finish => cpu_finish,
+            n_cs => cs_bus(BLANK_20_CS),
+            n_wr => n_wr_bus,
+            address_bus => local_addr_bus(2 downto 0),
+            in_bit => data_bus(0),
+            
+            out_bit_0 => out_bit_0,
+            out_bit_1 => out_bit_1,
+            out_bit_2 => out_bit_2,
+            out_bit_3 => out_bit_3,
+            out_bit_4 => out_bit_4,
+            out_bit_5 => out_bit_5,
+            out_bit_6 => out_bit_6,
+            out_bit_7 => out_bit_7
+    );
+
+    ---------------------------------------------------------------------
+
+
+    u_input_port_0: entity work.mem_based_input_port 
+    port map(
+        n_cs => cs_bus(BLANK_40_CS),
+        n_rd => n_rd_bus,
+        in_bit_0 => in_bit_0,
+        in_bit_1 => in_bit_1, 
+        in_bit_2 => in_bit_2, 
+        in_bit_3 => in_bit_3, 
+        in_bit_4 => in_bit_4,
+        in_bit_5 => in_bit_5,
+        in_bit_6 => in_bit_6,
+        in_bit_7 => in_bit_7,
+        address_bus => local_addr_bus(2 downto 0),
+        data_bus => data_bus
+    );
+  
+
+
 
 	-- ---------------------------------------------------------------------
 	-- mem_mapped_peripheral : entity work.mem_mapped_fsm
