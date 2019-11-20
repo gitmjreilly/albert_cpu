@@ -1,0 +1,117 @@
+: ALIGNED ;
+: ALLOT CP +! ;
+: ,  HERE DUP CELL+ CP ! ! ;
+: '  TOKEN HERE LAST find  >R 2DROP R> ;
+: [COMPILE]  10 , ' , ; IMMEDIATE
+: COMPILE R> DUP @ , CELL+ >R ; 
+: LITERAL  2 , , ; IMMEDIATE
+: .( [ CHAR ) ] LITERAL PARSE TYPE ; IMMEDIATE
+: (  [ CHAR ) ] LITERAL PARSE 2DROP ; IMMEDIATE
+: \  #TIB @ >IN ! ; IMMEDIATE
+.( HERE...)
+: VARIABLE CREATE 1 ALLOT ;
+: EXIT 11 , ; IMMEDIATE
+: BEGIN HERE ; IMMEDIATE
+: AGAIN 4 , ,   ; IMMEDIATE
+: IF  12 , HERE 0 , ; IMMEDIATE
+: THEN  HERE SWAP ! ; IMMEDIATE
+: FOR  13 , HERE ; IMMEDIATE
+: NEXT 10 , [ ' next ] LITERAL , , ; IMMEDIATE
+: UNTIL 12 , , ; IMMEDIATE
+: AHEAD 4 , HERE 0 , ; IMMEDIATE                                        
+: AFT ( a -- a A ) DROP [COMPILE] AHEAD [COMPILE] BEGIN SWAP ;
+  IMMEDIATE
+: ELSE 4 , HERE 0 ,  SWAP HERE SWAP ! ; IMMEDIATE 
+: REPEAT ( A a -- ) [COMPILE] AGAIN HERE SWAP ! ; IMMEDIATE
+: WHILE ( a -- A a )    [COMPILE] IF SWAP ; IMMEDIATE
+: do$ ( -- a )   R> R@ R> COUNT + ALIGNED >R SWAP >R ; 
+: .$ ( a -- ) COUNT TYPE ;
+: $," [ CHAR " ] LITERAL PARSE HERE PACK$ C@ 1 + ALLOT ;
+: $"| ( -- a ) do$ ; 
+: $" ( -- \ <string> ) 10 , [ ' $"| ] LITERAL ,   $," ;
+  IMMEDIATE
+: ."| ( -- ) do$ .$ ;
+: ." ( -- \ <string> ) 10 , [ ' ."| ] LITERAL ,   $," ;
+  IMMEDIATE  
+: _TYPE ( b u -- ) FOR AFT COUNT >CHAR EMIT THEN NEXT DROP ;
+: dm+ ( b u -- b )
+  OVER 4 U.R SPACE FOR AFT COUNT 5 U.R THEN NEXT ;
+: NUF? ( -- f ) KEY  13 =  ;
+: PACE ( -- ) 11 EMIT ;
+: SPACE ( -- ) BL EMIT ;
+: -ROT ROT ROT ;
+: DEPTH ( -- n ) SP@ SP0 @ - ;  \ MODIFIED FOR STACK DIRECTION
+: .S ( -- ) DEPTH t1 !  CR DEPTH FOR AFT R@  t1 @  +  PICK .
+  THEN NEXT ."  <tos" ;
+
+
+
+
+
+
+: DUMP ( b u -- )
+  BASE @ >R HEX  16 /
+  FOR CR 16 2DUP dm+ -ROT 2 SPACES _TYPE NUF? 0= WHILE
+  NEXT ELSE R> DROP THEN DROP  R> BASE ! ;
+
+CREATE _CLR 4 ,  27 , CHAR [ , CHAR 2 , CHAR J ,
+
+
+: ED ( blk -- )  BLK ! [ CHAR > ] LITERAL EMIT 2 SPACES
+  BLK @ 1024 * 50000 + 64 + 255 EXPECT ;
+
+
+VARIABLE ..1                            
+: @HEX-NUM-FROM-SERIAL 
+  4 PAD ! 1 ..1 !
+  3 FOR KEY PAD ..1  @ + !  1 ..1 +! NEXT
+  HEX  PAD NUMBER?  DROP THEN DECIMAL ;
+
+  
+: TEST
+  CR
+  ." THIS IS GREAT STUFF!"
+  CR
+  ." A SMALL TEST PROGRAM...:"
+  CR
+  2000 30000 DUMP
+  ;
+
+
+
+
+
+: dolit, 2 , ; IMMEDIATE
+: reti, 34 , ;
+: ei, 35 , ;
+: jsr, 10 , ;
+: rts, 11 , ;
+: @, 9 , ;
+: !, 8 , ;
+: +, 24 , ;   IMMEDIATE
+
+CREATE INT-HANDLER  dolit,  $D000 , @, dolit, 1 , +, 
+dolit, $D000 , !,  dolit, 2 , dolit,  $F012 , !, reti,  
+
+4  $FD00 !  INT-HANDLER $FD01 ! 
+: EI 35 , ; IMMEDIATE
+
+: GO 2 $F011 !  EI ; 
+
+: SHOW-TIMER 1000 FOR  $D000 @ . NEXT ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
