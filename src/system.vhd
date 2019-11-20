@@ -58,7 +58,8 @@ entity system is port (
 	in_bit_4 : in std_logic;
 	in_bit_5 : in std_logic;
 	in_bit_6 : in std_logic;
-	in_bit_7 : in std_logic
+	in_bit_7 : in std_logic;
+        ext_int  : in std_logic
 
 );
 end system;
@@ -111,7 +112,7 @@ architecture structural of system is
 	signal n_wr_bus : std_logic;
 	signal n_rd_bus : std_logic;
 
-	signal INT_SW_OUT : std_logic;
+	--signal INT_SW_OUT : std_logic;
 	signal RX_FULL : std_logic;
 	signal tx_busy_n : std_logic;
 	signal disk_uart_rx_fifo_is_half_full : std_logic;
@@ -293,7 +294,7 @@ begin
 	multiple_int_sources(0) <= rx_full;
 	multiple_int_sources(1) <= counter_is_zero;
 	multiple_int_sources(2) <= NOT tx_busy_n;
-	multiple_int_sources(3) <= int_sw_out;
+	multiple_int_sources(3) <= ext_int;
 	multiple_int_sources(4) <= disk_uart_rx_fifo_is_half_full;
 	multiple_int_sources(5) <= ptc_uart_rx_fifo_is_quarter_full;
 	  
