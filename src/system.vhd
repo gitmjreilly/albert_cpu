@@ -42,16 +42,23 @@ entity system is port (
 --	ptc_uart_rx : in std_logic;
 	
 	
+	-- Connect SPI to PMOD B
+	JB1 : out std_logic; -- SS -- out_bit_3
+	JB2 : out std_logic; -- MOSI
+	JB3 : in  std_logic; -- MISO
+	JB4 : out std_logic; -- SCLK
+	
 	out_bit_0 : out std_logic;
 	out_bit_1 : out std_logic;
 	out_bit_2 : out std_logic;
-	out_bit_3 : out std_logic;
-	out_bit_4 : out std_logic;
-	out_bit_5 : out std_logic;
+	-- out_bit_3 : out std_logic;
+	-- out_bit_4 : out std_logic;
+	-- sclk : out std_logic; -- was out_bit_3
+	-- mosi : out std_logic; -- was out_bit_4
+	
 	out_bit_6 : out std_logic;
 	out_bit_7 : out std_logic;
 
-	in_bit_0 : in std_logic;
 	in_bit_1 : in std_logic;
 	in_bit_2 : in std_logic;
 	in_bit_3 : in std_logic;
@@ -120,6 +127,14 @@ architecture structural of system is
 	signal counter_is_zero : std_logic;
 	signal	cpu_start  : std_logic;
 	signal	cpu_finish : std_logic;
+	
+	signal out_bit_3, out_bit_4, out_bit_5 : std_logic;
+	signal MISO : std_logic;
+	signal sclk : std_logic;
+	signal mosi : std_logic;
+	
+	signal in_bit_0 : std_logic;
+	
 	
 	---------------------------------------------------------------------
 
@@ -391,6 +406,32 @@ begin
 			data_bus => data_bus,
 			addr_bus => local_addr_bus(3 downto 0)
 		);
+
+
+
+	spi_0:  entity work.mem_based_spi 
+	    port map ( 
+			clock => my_clock,
+			reset => reset,
+			cpu_finish => cpu_finish,
+			addr_bus => local_addr_bus(3 downto 0),
+			data_bus => data_bus,
+			n_cs => cs_bus(BLANK_50_CS),
+			n_wr => n_wr_bus,
+			n_rd => n_rd_bus,
+			MOSI => MOSI,
+			MISO => MISO,
+			SCLK => SCLK
+		);
+
+
+	JB1 <= out_bit_3; -- : out std_logic; -- SS
+	JB2 <= MOSI;
+	MISO <= JB3;
+	JB4 <= SCLK;
+	
+
+
 
 
 --	disk_uart: entity work.uart_w_fifo
