@@ -14,7 +14,8 @@ entity mem_based_spi is
 		n_rd : in  STD_LOGIC;
 		SCLK : out STD_LOGIC;
 		MOSI : out STD_LOGIC;
-		MISO : in  STD_LOGIC)
+		MISO : in  STD_LOGIC;
+		ss : out STD_LOGIC)
 	;
 end mem_based_spi;
 
@@ -51,6 +52,8 @@ architecture Behavioral of mem_based_spi is
 	signal tick : std_logic;
 	signal rollover_next : unsigned(15 downto 0);
 	signal rollover_count : unsigned(15 downto 0);
+
+	signal ss_reg, ss_next : std_logic_vector(15 downto 0);
 
 	component fsm_tick is
 	Port ( 
@@ -91,7 +94,7 @@ begin
 	-- Writing to the clear_reg address ALSO triggers clear_tick
 	-- which causes the process that "owns" the status register
 	-- to clear it (on a bit basis).
-	process(clock, reset, state_next, spi_out, spi_out_next, sclk_next, is_busy_next)
+	process(clock, reset, state_next, spi_out, spi_out_next, sclk_next, is_busy_next, ss_next, ss_reg)
 	begin
 		if (reset = '1') then
 			state_reg <= state_idle;
@@ -100,7 +103,10 @@ begin
 			num_clocks <= (others => '0');
 			is_busy <= '0';
 			sclk_reg <= '0';
+			ss_reg <= X"0001";
 			rollover_count <= X"00FA";
+			-- small rollover for test bench testing
+			-- rollover_count <= X"0003";
 		elsif (rising_edge(clock)) then
 			state_reg <= state_next;
 			spi_out <= spi_out_next;
@@ -108,13 +114,14 @@ begin
 			sclk_reg <= sclk_next;
 			is_busy <= is_busy_next;
 			rollover_count <= rollover_next;
+			ss_reg <= ss_next;
 			num_clocks <= num_clocks_next;
 		end if;
 	end process;
 	
 	
 	process (
-		state_reg, cpu_finish, is_write_in_progress, is_busy, addr_bus, data_bus, tick, num_clocks, num_clocks_next, spi_out)
+		state_reg, cpu_finish, is_write_in_progress, is_busy, addr_bus, data_bus, tick, num_clocks, num_clocks_next, spi_out, ss_reg)
 	begin
 		state_next <= state_reg;
 		spi_out_next <= spi_out;
@@ -123,6 +130,7 @@ begin
 		is_busy_next <= is_busy;
 		num_clocks_next <= num_clocks;
 		rollover_next <= rollover_count;
+		ss_next <= ss_reg;
 
 
 		case state_reg is
@@ -148,6 +156,9 @@ begin
 						-- through the fsm_tick component
 						when X"2" =>
 							rollover_next <= unsigned(data_bus);
+							state_next <= state_idle;
+						when X"3" =>
+							ss_next <= data_bus;
 							state_next <= state_idle;
 						when others =>
 							state_next <= state_idle;
@@ -193,10 +204,10 @@ begin
 	
 	MOSI <= spi_out(7);
 	SCLK <= sclk_reg;
+   ss <= ss_reg(0);
 	
 
 
--- Host read code copied from mem based interrupt controller
 
 	
 	-----------------------------------------------------------------
@@ -242,6 +253,8 @@ begin
 							val_next <= X"000" & "000" &  is_busy;
 						when X"2" =>
 							val_next <= std_logic_vector(rollover_count);
+						when X"3" =>
+							val_next <= std_logic_vector(ss_reg);
 						when others =>
 							val_next <= X"1234";
 					end case;

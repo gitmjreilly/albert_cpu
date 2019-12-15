@@ -132,8 +132,10 @@ architecture structural of system is
 	signal MISO : std_logic;
 	signal sclk : std_logic;
 	signal mosi : std_logic;
+	signal ss_0 : std_logic;
 	
 	signal in_bit_0 : std_logic;
+	
 	
 	
 	---------------------------------------------------------------------
@@ -421,11 +423,12 @@ begin
 			n_rd => n_rd_bus,
 			MOSI => MOSI,
 			MISO => MISO,
-			SCLK => SCLK
+			SCLK => SCLK,
+			ss => ss_0
 		);
 
 
-	JB1 <= out_bit_3; -- : out std_logic; -- SS
+	JB1 <= ss_0;
 	JB2 <= MOSI;
 	MISO <= JB3;
 	JB4 <= SCLK;
