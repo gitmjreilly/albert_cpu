@@ -9,8 +9,8 @@ set_property PACKAGE_PIN W5 [get_ports clk]
 	create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk]
 
 # Switches
-set_property PACKAGE_PIN V17 [get_ports {in_bit_2}]
-	set_property IOSTANDARD LVCMOS33 [get_ports {in_bit_2}]
+set_property PACKAGE_PIN V17 [get_ports {sw_0}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {sw_0}]
 set_property PACKAGE_PIN V16 [get_ports {in_bit_3}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {in_bit_3}]
 set_property PACKAGE_PIN W16 [get_ports {in_bit_4}]
@@ -143,8 +143,8 @@ set_property PACKAGE_PIN U18 [get_ports reset]
 
 ##Pmod Header JA
 ##Sch name = JA1
-#set_property PACKAGE_PIN J1 [get_ports {JA[0]}]
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[0]}]
+set_property PACKAGE_PIN J1 [get_ports {JA1}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {JA1}]
 ##Sch name = JA2
 #set_property PACKAGE_PIN L2 [get_ports {JA[1]}]
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[1]}]
@@ -155,8 +155,8 @@ set_property PACKAGE_PIN U18 [get_ports reset]
 #set_property PACKAGE_PIN G2 [get_ports {JA[3]}]
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[3]}]
 ##Sch name = JA7
-#set_property PACKAGE_PIN H1 [get_ports {JA[4]}]
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[4]}]
+set_property PACKAGE_PIN H1 [get_ports {JA7}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {JA7}]
 ##Sch name = JA8
 #set_property PACKAGE_PIN K2 [get_ports {JA[5]}]
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[5]}]
@@ -312,10 +312,10 @@ set_property PACKAGE_PIN P18 [get_ports {out_bit_0}]
 
 
 ##USB-RS232 Interface
-set_property PACKAGE_PIN B18 [get_ports console_uart_rx]
-	set_property IOSTANDARD LVCMOS33 [get_ports console_uart_rx]
-set_property PACKAGE_PIN A18 [get_ports console_uart_tx]
-	set_property IOSTANDARD LVCMOS33 [get_ports console_uart_tx]
+set_property PACKAGE_PIN B18 [get_ports uart_rx_from_usb]
+	set_property IOSTANDARD LVCMOS33 [get_ports uart_rx_from_usb]
+set_property PACKAGE_PIN A18 [get_ports uart_tx_to_usb]
+	set_property IOSTANDARD LVCMOS33 [get_ports uart_tx_to_usb]
 
 
 ##USB HID (PS/2)

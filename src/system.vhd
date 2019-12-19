@@ -31,16 +31,27 @@ entity system is port (
 	-- SevenSegSegments : out std_logic_vector(7 downto 0);
 	-- address_switches : in std_logic_vector(7 downto 0);
 	
-	-- Three serial ports...
-	console_uart_tx : out std_logic;
-	console_uart_rx : in std_logic;
-	
+
+	uart_tx_to_usb : out std_logic;
+	uart_rx_from_usb : in std_logic;
+		
+	-- On PMOD A, use JA1 as lvttl terminal connections
+	-- We'll use one uart and a switch to select either
+	-- the Serial-USB interface or the LV TTL interface
+	JA1 : out std_logic;
+	JA7 : in std_logic;
+
+    -- use sw0 to select connection to uart
+    -- either USB-SERIAL or LVTTL
+    sw_0 : in std_logic;
+
 --	disk_uart_tx : out std_logic;
 --	disk_uart_rx : in std_logic;
 	
 --	ptc_uart_tx : out std_logic;
 --	ptc_uart_rx : in std_logic;
 	
+
 	
 	-- Connect SPI to PMOD B
 	JB1 : out std_logic; -- SS -- out_bit_3
@@ -60,7 +71,6 @@ entity system is port (
 	out_bit_7 : out std_logic;
 
 	in_bit_1 : in std_logic;
-	in_bit_2 : in std_logic;
 	in_bit_3 : in std_logic;
 	in_bit_4 : in std_logic;
 	in_bit_5 : in std_logic;
@@ -69,7 +79,6 @@ entity system is port (
 
 );
 end system;
-
 
 
 architecture structural of system is
@@ -113,8 +122,8 @@ architecture structural of system is
 	signal multiple_int_sources : std_logic_vector(15 downto 0);
 
 	signal reset_n : std_logic;
-	signal txd_bus : std_logic;
-	signal rxd_bus : std_logic;
+	signal uart_0_tx : std_logic;
+	signal uart_0_rx : std_logic;
 	signal n_wr_bus : std_logic;
 	signal n_rd_bus : std_logic;
 
@@ -135,6 +144,7 @@ architecture structural of system is
 	signal ss_0 : std_logic;
 	
 	signal in_bit_0 : std_logic;
+	signal in_bit_2 : std_logic;
 	
 	
 	
@@ -151,25 +161,6 @@ architecture structural of system is
 	signal test_counter : std_logic_vector(23 downto 0);
 	
 begin
-	console_uart_tx <= txd_bus;
-	rxd_bus <= console_uart_rx;
-
-	-- todo restore external r/w
-	-- n_wr <= n_wr_bus;
-	-- n_rd <= n_rd_bus;
-
-
-
-	---------------------------------------------------------------------
-	-- clk_divider : entity work.ClockDivider 
-		-- port map (
-			-- reset => reset,
-			-- clkin => clk,
-			-- slowout => clk_counter -- clk_counter is derived from clk OK
-		-- );
-	-- ---------------------------------------------------------------------
-
-
 
 
 	u_my_clock : entity work.clk_wiz_100_50
@@ -398,8 +389,8 @@ begin
 	console_uart: entity work.uart_w_fifo
 		port map ( 
 			clk  => my_clock,
-			rx => RXD_BUS,
-			tx => TXD_BUS,
+			rx => uart_0_rx,
+			tx => uart_0_tx,
 			reset => reset,
 			cpu_finish => cpu_finish,
 			n_cs => cs_bus(CONSOLE_UART_CS),
@@ -408,6 +399,21 @@ begin
 			data_bus => data_bus,
 			addr_bus => local_addr_bus(3 downto 0)
 		);
+
+
+    process (sw_0, uart_rx_from_usb, uart_0_tx, JA7)
+    begin
+        if (sw_0 = '0') then
+            uart_0_rx <= uart_rx_from_usb;
+            uart_tx_to_usb <= uart_0_tx;
+            JA1 <= '1';
+        else
+            uart_0_rx <= JA7;
+            JA1 <= uart_0_tx;
+            uart_tx_to_usb <= '1';
+        end if;  
+    end process;
+
 
 
 
