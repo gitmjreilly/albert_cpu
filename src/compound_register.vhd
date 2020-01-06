@@ -20,8 +20,7 @@ entity compound_register is
 		
 		output_enable : in  std_logic;
 		
-		latch        : in std_logic;
-		enable       : in std_logic
+		latch        : in std_logic
 
 	);
 end compound_register;
@@ -43,7 +42,7 @@ begin
 	   if reset = '1' then 
          internal_state <= (others => '0');
       elsif	clk'event and clk='1' then  
-			if ( (enable = '1') and (latch = '1') )then
+			if ( (latch = '1') )then
 				internal_state <= in1;
 			end if;
      	end if;

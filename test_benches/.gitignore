@@ -1,9 +1,7 @@
 # Ignore everything in this dir
 # We're assuming vivado builds will take place here
-*
 # But we don't want to ignore the .gitignore file !!!
 !.gitignore
 *.o
 *.cf
 *.swp
-

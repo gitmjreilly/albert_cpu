@@ -1,3 +1,4 @@
+-- TODO remove cpu_finish and add cpu_clock and system_clock
 ---------------------------------------------------------------------
 --  uart based on pong chu and Xilinx Coregen Ram
 ---------------------------------------------------------------------

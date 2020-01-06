@@ -1,3 +1,4 @@
+-- TODO Remove cpu_finish, add 2 clocks to detect AST end of uCode cycle (RE)
 --
 -- This is the multi input interrupt controller.
 -- It is meant to be memory mapped.

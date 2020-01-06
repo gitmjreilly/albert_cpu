@@ -1,3 +1,5 @@
+-- TODO remove reference to cpu_finish and start FSM after confirming cpu_clock is low
+-- TODO add both system_clock and cpu_clock.  Drive FSM with system_clock
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;

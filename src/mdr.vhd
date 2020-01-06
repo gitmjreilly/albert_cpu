@@ -1,3 +1,4 @@
+-- TODO remove enable (formerly driven by cpu_finish) - DONE
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
@@ -13,8 +14,7 @@ entity mdr is
 		out_mem_data_bus : in std_logic;
 		out_b_bus : in std_logic;
 		b_bus : out std_logic_vector(15 downto 0);
-		always_out : out std_logic_vector(15 downto 0);
-		enable : in std_logic
+		always_out : out std_logic_vector(15 downto 0)
 	);      
 end mdr;
 
@@ -30,13 +30,11 @@ begin
 	process(clock, load_mem_data_bus, load_c_bus)
 	begin
 		if (rising_edge(clock)) then
-			if (enable = '1') then
 				if (load_mem_data_bus = '1') then
 					stored_word <= mem_data_bus;
 				elsif (load_c_bus = '1') then
 					stored_word <= c_bus;
 				end if;
-			end if;
 		end if;
 	end process;
 	

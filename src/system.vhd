@@ -1,3 +1,4 @@
+-- TODO add new clocks cpu_clock, n_cpu_clock and shifted system_clock
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
@@ -134,8 +135,6 @@ architecture structural of system is
 	signal ptc_uart_rx_fifo_is_quarter_full : std_logic;
 	signal cpu_int : std_logic;
 	signal counter_is_zero : std_logic;
-	signal	cpu_start  : std_logic;
-	signal	cpu_finish : std_logic;
 	
 	signal out_bit_3, out_bit_4, out_bit_5 : std_logic;
 	signal MISO : std_logic;
@@ -184,23 +183,26 @@ begin
 	---------------------------------------------------------------------
 	-- Notice the timing generator which generates cpu_start and cpu_finish
 	-- pulses uses my_clock as the fundamental clock for the system.
-	the_cpu_timing_generator  : entity work.cpu_timing_generator 
-		port map( 
-		clk => my_clock,
-		reset => reset,
-		cpu_start => cpu_start,
-		cpu_finish => cpu_finish
-	);
+   -- TODO Remove timing generator - Commented out for now
+--	the_cpu_timing_generator  : entity work.cpu_timing_generator 
+--		port map( 
+--		clk => my_clock,
+--		reset => reset,
+--		cpu_start => cpu_start,
+--		cpu_finish => cpu_finish
+--	);
 	---------------------------------------------------------------------
 	
 	
 	---------------------------------------------------------------------
+   -- TODO Remove references to cpu_start and cpu_finish - commented out for now
+   -- TODO "clock" to cpu should be cpu_clock 
 	u_cpu : entity work.cpu
 		port map (
 			reset => reset,
 			my_clock => my_clock, 
-			cpu_start => cpu_start,
-			cpu_finish => cpu_finish,
+			-- cpu_start => cpu_start,
+			-- cpu_finish => cpu_finish,
 			n_indicator => n_ind,
 			z_indicator => z_ind,
 			rd_indicator => rd_ind,
@@ -267,11 +269,14 @@ begin
 
 
 	---------------------------------------------------------------------
+   -- TODO remove cpu_finish from block ram - commented out for now
+   -- TODO "clock" to ram should be system_clock
+   -- TODO update block_ram_64kb to accept cpu_clock and system_clock
 	u_block_ram_64kb : entity work.block_ram_64kb
 		port map (
 			clk => my_clock,
 			reset => reset,
-			cpu_finish => cpu_finish,
+			-- cpu_finish => cpu_finish,
 			addr_bus => local_addr_bus(15 downto 0),
 			data_bus => data_bus,
 			n_cs => cs_bus(RAM_CS),
@@ -282,6 +287,7 @@ begin
 
 
 	---------------------------------------------------------------------
+   -- TODO check to confirm my_clock is ok  and, if so, change to cpu_clock
 	counter_0: entity work.mem_based_counter 
 		port map (
 			clock => my_clock,  -- counter clock MAY be OK - Confirm!!!
@@ -310,42 +316,48 @@ begin
 
 
 
-	int_controller : entity work.mem_based_int_controller 
-		port map ( 
-			clock => my_clock, 
-			reset => reset,
-			cpu_finish => cpu_finish,
-			addr_bus => local_addr_bus(3 downto 0),
-			data_bus => data_bus,
-			int_occurred => cpu_int,
-			n_cs => cs_bus(INT_CONTROLLER_CS),
-			n_wr => n_wr_bus,
-			n_rd => n_rd_bus,
-			raw_interrupt_word => multiple_int_sources
-		);
+   -- TODO restore interrupt controller to system
+   -- TODO remove cpu_finish from interrupt controller
+   -- TODO change my_clock to system_clock and include cpu_clock to detect AST end of uCODE cycle (RE)
+--	int_controller : entity work.mem_based_int_controller 
+--		port map ( 
+--			clock => my_clock, 
+--			reset => reset,
+--			cpu_finish => cpu_finish,
+--			addr_bus => local_addr_bus(3 downto 0),
+--			data_bus => data_bus,
+--			int_occurred => cpu_int,
+--			n_cs => cs_bus(INT_CONTROLLER_CS),
+--			n_wr => n_wr_bus,
+--			n_rd => n_rd_bus,
+--			raw_interrupt_word => multiple_int_sources
+--		);
 	
 	
 
     ---------------------------------------------------------------------
-    u_output_port_0: entity work.mem_based_output_port 
-        port map (
-            reset => reset,
-            clk => my_clock,
-            cpu_finish => cpu_finish,
-            n_cs => cs_bus(BLANK_20_CS),
-            n_wr => n_wr_bus,
-            address_bus => local_addr_bus(2 downto 0),
-            in_bit => data_bus(0),
-            
-            out_bit_0 => out_bit_0,
-            out_bit_1 => out_bit_1,
-            out_bit_2 => out_bit_2,
-            out_bit_3 => out_bit_3,
-            out_bit_4 => out_bit_4,
-            out_bit_5 => out_bit_5,
-            out_bit_6 => out_bit_6,
-            out_bit_7 => out_bit_7
-    );
+   -- TODO restore output_port to system
+   -- TODO remove cpu_finish from output_port
+   -- TODO change my_clock to system_clock, and add cpu_clock
+--    u_output_port_0: entity work.mem_based_output_port 
+--        port map (
+--            reset => reset,
+--            clk => my_clock,
+--            cpu_finish => cpu_finish,
+--            n_cs => cs_bus(BLANK_20_CS),
+--            n_wr => n_wr_bus,
+--            address_bus => local_addr_bus(2 downto 0),
+--            in_bit => data_bus(0),
+--            
+--            out_bit_0 => out_bit_0,
+--            out_bit_1 => out_bit_1,
+--            out_bit_2 => out_bit_2,
+--            out_bit_3 => out_bit_3,
+--            out_bit_4 => out_bit_4,
+--            out_bit_5 => out_bit_5,
+--            out_bit_6 => out_bit_6,
+--            out_bit_7 => out_bit_7
+--    );
 
     ---------------------------------------------------------------------
 
@@ -370,6 +382,7 @@ begin
 
 
 	-- ---------------------------------------------------------------------
+   -- TODO Remove mem_mapped_peripheral
 	-- mem_mapped_peripheral : entity work.mem_mapped_fsm
 		-- port map (
 			-- clk => my_clock,
@@ -386,13 +399,15 @@ begin
 
 
 
+   -- TODO fix uart so it does not need cpu_finish
+   -- TODO change my_clock to system_clock, add  cpu_clock to detect AST end of uCode cycle (RE)
 	console_uart: entity work.uart_w_fifo
 		port map ( 
 			clk  => my_clock,
 			rx => uart_0_rx,
 			tx => uart_0_tx,
 			reset => reset,
-			cpu_finish => cpu_finish,
+			-- cpu_finish => cpu_finish,
 			n_cs => cs_bus(CONSOLE_UART_CS),
 			n_rd => n_rd_bus,
 			n_wr => n_wr_bus,
@@ -417,21 +432,24 @@ begin
 
 
 
-	spi_0:  entity work.mem_based_spi 
-	    port map ( 
-			clock => my_clock,
-			reset => reset,
-			cpu_finish => cpu_finish,
-			addr_bus => local_addr_bus(3 downto 0),
-			data_bus => data_bus,
-			n_cs => cs_bus(BLANK_50_CS),
-			n_wr => n_wr_bus,
-			n_rd => n_rd_bus,
-			MOSI => MOSI,
-			MISO => MISO,
-			SCLK => SCLK,
-			ss => ss_0
-		);
+   -- TODO restore spi port
+   -- TODO remove finish from spi port
+   -- TODO change my_clock to system_clock, and add cpu_clock
+--	spi_0:  entity work.mem_based_spi 
+--	    port map ( 
+--			clock => my_clock,
+--			reset => reset,
+--			cpu_finish => cpu_finish,
+--			addr_bus => local_addr_bus(3 downto 0),
+--			data_bus => data_bus,
+--			n_cs => cs_bus(BLANK_50_CS),
+--			n_wr => n_wr_bus,
+--			n_rd => n_rd_bus,
+--			MOSI => MOSI,
+--			MISO => MISO,
+--			SCLK => SCLK,
+--			ss => ss_0
+--		);
 
 
 	JB1 <= ss_0;

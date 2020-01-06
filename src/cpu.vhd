@@ -6,7 +6,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity cpu is
 	Port ( 
 		reset : in std_logic;																		
-		my_clock : in std_logic;	-- this should be the 50Mhz Clock
+		my_clock : in std_logic;
 		N_indicator : out std_logic;
 		Z_indicator : out std_logic;
 		RD_INDICATOR : out std_logic;
@@ -18,9 +18,8 @@ entity cpu is
 		Mem_Data_bus : inout std_logic_vector(15 downto 0);
 		N_WR : out std_logic;
 		N_RD : out std_logic;
-		INT : in std_logic;
-		cpu_start : in std_logic;
-		cpu_finish : in std_logic
+		INT : in std_logic
+      -- TODO remove cpu_start, cpu_finish from cpu entity - DONE
 	);
 end cpu;
 
@@ -137,11 +136,11 @@ component shifter is
            output : out std_logic_vector(15 downto 0));
 end component;
 
+-- TODO remove enable from flip_flop - DONE
 component flip_flop is
     Port ( input : in std_logic;
            output : out std_logic;
-           clock : in std_logic;
-		   enable : in std_logic);
+           clock : in std_logic);
 end component;
 
 
@@ -259,18 +258,19 @@ mir_b <= 		"000000000000" & MIROut(3 downto 0);
 --- The MIR is the register with the micro code word produced by the
 --- ControlStore.  It is loaded upon the falling edge of the clock.
 ---
-MIR_REG : entity work.compound_register  -- adjusted for sync clk
+-- TODO ensure MIR is set at beginning of AST uCode cycle (FE) by using not(my_clock)  - DONE
+-- TODO remove enable (formerly set by cpu_start) - DONE
+MIR_REG : entity work.compound_register  
 	generic map(
 		width => 41
 	)
 	port map (
-		clk => my_clock ,
+		clk => not(my_clock) ,
 		reset => reset ,
 		in1   => ControlStoreOut,
 		out1  => MIROUt ,
 		output_enable  => '1' ,
-		latch => '1' , 
-		enable => cpu_start -- Notice MIR is loaded on cpu_start !!!!
+		latch => '1'  
 	);
 
 
@@ -340,7 +340,9 @@ u_control_store : control_store port map (ControlStoreNextAddress, ControlStoreO
 -- enable_XX enables output onto the b_bus
 -- load_XX loads XX from the c_bus on the rising edge of the clock
 --
-SP_REG: entity work.compound_register -- adjusted for sync clock
+
+-- TODO remove cpu_finish from SP_REG - DONE
+SP_REG: entity work.compound_register 
 	port map (
 		my_clock,  
 		reset , 
@@ -348,11 +350,11 @@ SP_REG: entity work.compound_register -- adjusted for sync clock
 		b_bus, 
 		sp_out,  
 		enable_sp,  
-		load_sp,
-		cpu_finish
+		load_sp
 	);
 
-LV_REG: entity work.compound_register -- adjusted for sync clock
+-- TODO remove cpu_finish from LV_REG - DONE
+LV_REG: entity work.compound_register 
 	port map (
 		my_clock,  
 		reset , 
@@ -360,11 +362,11 @@ LV_REG: entity work.compound_register -- adjusted for sync clock
 		b_bus, 
 		lv_out,  
 		enable_lv,  
-		load_lv,
-		cpu_finish
+		load_lv
 	);
 
-CPP_REG: entity work.compound_register -- adjusted for sync clock
+-- TODO remove cpu_finish from CPP_REG - DONE
+CPP_REG: entity work.compound_register 
 	port map (
 		my_clock, 
 		reset , 
@@ -372,11 +374,11 @@ CPP_REG: entity work.compound_register -- adjusted for sync clock
 		b_bus, 
 		cpp_out, 
 		enable_cpp, 
-		load_cpp,
-		cpu_finish
+		load_cpp
 	);
 
-TOS_REG: entity work.compound_register -- adjusted for sync clock
+-- TODO remove cpu_finish from TOS_REG - DONE
+TOS_REG: entity work.compound_register 
 	port map (
 		my_clock, 
 		reset , 
@@ -384,13 +386,12 @@ TOS_REG: entity work.compound_register -- adjusted for sync clock
 		b_bus, 
 		tos_out, 
 		enable_tos, 
-		load_tos, 
-		cpu_finish
+		load_tos
 	);
 
 -- This is the reg which gets single interrupt
--- It is enabled by cpu_finish to interrupts are only caught on end of an instruction cycle
-INTCTL_HIGH_REG : entity work.compound_register -- adjusted for sync clock
+-- TODO look into intctl_high_reg and how it captures interrupts and remove cpu_finish _ DONE
+INTCTL_HIGH_REG : entity work.compound_register 
 	generic map(
 		width => 8
 	)
@@ -401,12 +402,12 @@ INTCTL_HIGH_REG : entity work.compound_register -- adjusted for sync clock
 		out1  => b_bus(15 downto 8) ,
 		out2  => INTCTL_HIGH_OUT,
 		output_enable  => enable_intctl,
-		latch => '1' ,
-		enable => cpu_finish
+		latch => '1' 
 	);
 
 
-INTCTL_LOW_REG : entity work.compound_register -- ajusted for sync clock
+-- TODO remove cpu_finish from INTCTL_LOW_REG - DONE
+INTCTL_LOW_REG : entity work.compound_register 
 	generic map(
 		width => 8
 	)
@@ -417,14 +418,14 @@ INTCTL_LOW_REG : entity work.compound_register -- ajusted for sync clock
 		out1  => b_bus(7 downto 0) ,
 		out2  => INTCTL_LOW_OUT,
 		output_enable  => enable_intctl,
-		latch => load_intctl ,
-		enable => cpu_finish
+		latch => load_intctl 
 	);
 
 
 
 -- Segment registers on the datapath
-ES_REG : entity work.compound_register -- adjusted for sync clock
+-- TODO remove cpu_finish from ES_REG - DONE
+ES_REG : entity work.compound_register 
 	port map (
 	    clk => my_clock  ,
 		reset => reset ,
@@ -432,11 +433,11 @@ ES_REG : entity work.compound_register -- adjusted for sync clock
 		out1  => b_bus ,
 		out2  => es_out ,
 		output_enable  => DecoderOut(3),
-		latch => MIROut(37) ,
-		enable => cpu_finish
+		latch => MIROut(37) 
 	);
 
-CS_REG : entity work.compound_register -- adjusted for sync clock
+-- TODO remove cpu_finish from CS_REG - DONE
+CS_REG : entity work.compound_register 
 	port map (
 		clk => my_clock  ,
 		reset => reset ,
@@ -444,11 +445,11 @@ CS_REG : entity work.compound_register -- adjusted for sync clock
 		out1  => b_bus ,
 		out2  => cs_out ,
 		output_enable  => DecoderOut(8),
-		latch => MIROut(38) ,
-		enable => cpu_finish
+		latch => MIROut(38) 
 	);
 
-DS_REG : entity work.compound_register -- adjusted for sync clock
+-- TODO remove cpu_finish from DS_REG - DONE
+DS_REG : entity work.compound_register 
 	port map (
 	    clk => my_clock  ,
 		reset => reset ,
@@ -456,8 +457,7 @@ DS_REG : entity work.compound_register -- adjusted for sync clock
 		out1  => b_bus ,
 		out2  => ds_out ,
 		output_enable  => DecoderOut(11),
-		latch => MIROut(39) ,
-		enable => cpu_finish
+		latch => MIROut(39) 
 	);
 
 
@@ -474,8 +474,9 @@ INT_HIGH_REG_IN(7 downto 1) <= "0000000";
 -- Its input comes from the c_bus; output goes to the b_bus
 -- load_sp loads sp from the c_bus on the rising edge of the clock
 --
+-- TODO remove cpu_finish from H_REG - DONE
 enable_h <= '1';
-H_REG: entity work.compound_register -- adjusted for synch clock
+H_REG: entity work.compound_register 
 	port map (
 		my_clock, 
 		reset, 
@@ -483,11 +484,11 @@ H_REG: entity work.compound_register -- adjusted for synch clock
 		alu_b_bus, 
 		h_out, 
 		enable_h, 
-		load_h,
-		cpu_finish
+		load_h
 	);
 
-MAR_REG: entity work.compound_register -- adjusted for sync clock
+-- TODO remove cpu_finish from MAR_REG - DONE
+MAR_REG: entity work.compound_register 
 	port map (
 		my_clock,  
 		reset , 
@@ -495,10 +496,11 @@ MAR_REG: entity work.compound_register -- adjusted for sync clock
 		b_bus, 
 		mar_out,
 		'0' ,  -- notice MAR is never enabled on b_bus
-		load_mar,
-		cpu_finish
+		load_mar
 	);
 
+-- TODO remove cpu_finish from MDR_REG - DONE
+-- TODO fix mdr component - DONE
 MDR_REG : entity work.mdr 
 	port map (
 		clock => my_clock,
@@ -509,14 +511,17 @@ MDR_REG : entity work.mdr
 		out_mem_data_bus => wr_ff_out,
 		out_b_bus => enable_mdr,
 		b_bus => b_bus,
-		always_out => mdr_out,
-		enable => cpu_finish
+		always_out => mdr_out
 	);
 
-RD_FF : flip_flop port map (MIROut(5), RD_FF_OUT, my_clock, cpu_finish);
-FETCH_FF : flip_flop port map (MIROut(4), FETCH_FF_OUT, my_clock, cpu_finish);
-WR_FF : flip_flop port map (MIROut(6), WR_FF_OUT, my_clock, cpu_finish);
-ES_FF : flip_flop port map (MIROut(40), ES_FF_OUT, my_clock, cpu_finish);
+-- TODO remove cpu_finish from RD_FF - DONE
+RD_FF : flip_flop port map (MIROut(5), RD_FF_OUT, my_clock);
+-- TODO remove cpu_finish from FETCH_FF - DONE
+FETCH_FF : flip_flop port map (MIROut(4), FETCH_FF_OUT, my_clock);
+-- TODO remove cpu_finish from WR_FF - DONE
+WR_FF : flip_flop port map (MIROut(6), WR_FF_OUT, my_clock);
+-- TODO remove cpu_finish from ES_FF - DONE
+ES_FF : flip_flop port map (MIROut(40), ES_FF_OUT, my_clock);
 N_RD <= NOT (RD_FF_OUT OR FETCH_FF_OUT);
 N_WR <= NOT WR_FF_OUT;
 RD_INDICATOR <= RD_FF_OUT;
@@ -524,7 +529,8 @@ WR_INDICATOR <= WR_FF_OUT;
 FETCH_INDICATOR <= FETCH_FF_OUT;
 
 
-PC_REG:  entity work.compound_register  -- set up for synch clock
+-- TODO remove cpu_finish from PC_REG - DONE
+PC_REG:  entity work.compound_register  
 	port map (
 		my_clock, 
 		reset , 
@@ -532,11 +538,11 @@ PC_REG:  entity work.compound_register  -- set up for synch clock
 		b_bus, 
 		pc_out,  
 		enable_pc, 
-		load_pc,
-		cpu_finish
+		load_pc
 	);
 
-MBR_REG: entity work.compound_register -- set up for synch clock
+-- TODO remove cpu_finish from MBR_REG - DONE
+MBR_REG: entity work.compound_register 
 	port map (
 		my_clock,  
 		reset , 
@@ -544,8 +550,7 @@ MBR_REG: entity work.compound_register -- set up for synch clock
 		b_bus, 
 		mbr_out,  
 		enable_mbr1, 
-		FETCH_FF_OUT,
-		cpu_finish
+		FETCH_FF_OUT
 	);
 
 mem_ff_out <= RD_FF_OUT OR WR_FF_OUT;
@@ -628,9 +633,12 @@ u_alu: alu port map (b_bus, alu_b_bus, ctl_lines, alu_output, N, Z, C);
 --
 -- These flip flops store the last N & Z outputs from the ALU.
 --
-N_FF : flip_flop port map (N, N_FF_OUT, my_clock, cpu_finish);
-Z_FF : flip_flop port map (Z, Z_FF_OUT, my_clock, cpu_finish);
-C_FF : flip_flop port map (C, C_FF_OUT, my_clock, cpu_finish);
+-- TODO remove cpu_finish from N_FF - DONE
+N_FF : flip_flop port map (N, N_FF_OUT, my_clock);
+-- TODO remove cpu_finish from Z_FF - DONE
+Z_FF : flip_flop port map (Z, Z_FF_OUT, my_clock);
+-- TODO remove cpu_finish from C_FF - DONE
+C_FF : flip_flop port map (C, C_FF_OUT, my_clock);
 --N_Indicator <= N_FF_OUT;
 --Z_Indicator <= Z_FF_OUT;
 N_Indicator <= '0';

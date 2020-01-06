@@ -1,3 +1,4 @@
+-- TODO remove cpu_finish; add two clocks
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
