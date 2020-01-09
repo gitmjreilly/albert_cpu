@@ -46,14 +46,14 @@ architecture Behavioral of block_ram_64kb is
 	signal val_reg, val_next : std_logic_vector(15 downto 0);
 	
 begin
---	u_blk_64KW : entity work.block_ram_64_KW
---	  PORT MAP (
---		clka => system_clock,
---		wea => wea_reg,
---		addra => addr_bus,
---		dina => data_bus,
---		douta => douta
---	  );
+	u_blk_64KW : entity work.block_ram_64_KW
+	  PORT MAP (
+		clka => system_clock,
+		wea => wea_reg,
+		addra => addr_bus,
+		dina => data_bus,
+		douta => douta
+	  );
 		
 
 	

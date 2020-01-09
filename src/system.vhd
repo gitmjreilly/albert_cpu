@@ -113,7 +113,7 @@ architecture structural of system is
 	
 
 	---------------------------------------------------------------------
-	signal my_clock : std_logic; -- derived clock to be deprecated
+	signal cpu_clock, system_clock : std_logic; 
 	signal four_digits : std_logic_vector(15 downto 0);
 	-- signal clk_counter : std_logic_vector(23 downto 0); -- OK Driven by clk
 
@@ -160,49 +160,22 @@ architecture structural of system is
 	signal test_counter : std_logic_vector(23 downto 0);
 	
 begin
-
-
-	u_my_clock : entity work.clk_wiz_100_50
+   u_my_clocks: entity work.clock_100_50_25_clk_wiz
 		port map (
 			clk_in1=> clk,
-			clk_out1 => my_clock,
+			clk_out1 => system_clock,
+			clk_out2 => cpu_clock,
 			reset  => reset
 		);	
 
 
-	
---	u_my_clock : entity work.clk_wiz_100_100
---		port map (
---			clk_in1=> clk,
---			clk_out1 => my_clock,
---			reset  => reset
---		);	
-	
-	
-
-	---------------------------------------------------------------------
-	-- Notice the timing generator which generates cpu_start and cpu_finish
-	-- pulses uses my_clock as the fundamental clock for the system.
-   -- TODO Remove timing generator - Commented out for now
---	the_cpu_timing_generator  : entity work.cpu_timing_generator 
---		port map( 
---		clk => my_clock,
---		reset => reset,
---		cpu_start => cpu_start,
---		cpu_finish => cpu_finish
---	);
-	---------------------------------------------------------------------
-	
-	
 	---------------------------------------------------------------------
    -- TODO Remove references to cpu_start and cpu_finish - commented out for now
    -- TODO "clock" to cpu should be cpu_clock 
 	u_cpu : entity work.cpu
 		port map (
 			reset => reset,
-			my_clock => my_clock, 
-			-- cpu_start => cpu_start,
-			-- cpu_finish => cpu_finish,
+			my_clock => cpu_clock, 
 			n_indicator => n_ind,
 			z_indicator => z_ind,
 			rd_indicator => rd_ind,
@@ -274,9 +247,9 @@ begin
    -- TODO update block_ram_64kb to accept cpu_clock and system_clock
 	u_block_ram_64kb : entity work.block_ram_64kb
 		port map (
-			clk => my_clock,
+			cpu_clock => cpu_clock,
+			system_clock => system_clock,
 			reset => reset,
-			-- cpu_finish => cpu_finish,
 			addr_bus => local_addr_bus(15 downto 0),
 			data_bus => data_bus,
 			n_cs => cs_bus(RAM_CS),
@@ -286,11 +259,15 @@ begin
 	---------------------------------------------------------------------
 
 
+
+
+
+
 	---------------------------------------------------------------------
    -- TODO check to confirm my_clock is ok  and, if so, change to cpu_clock
 	counter_0: entity work.mem_based_counter 
 		port map (
-			clock => my_clock,  -- counter clock MAY be OK - Confirm!!!
+			clock => cpu_clock,  
 			reset => reset,
 			n_rd => n_rd_bus,
 			n_cs => cs_bus(COUNTER_0_CS),
@@ -403,11 +380,11 @@ begin
    -- TODO change my_clock to system_clock, add  cpu_clock to detect AST end of uCode cycle (RE)
 	console_uart: entity work.uart_w_fifo
 		port map ( 
-			clk  => my_clock,
+			clk  => system_clock,
 			rx => uart_0_rx,
 			tx => uart_0_tx,
 			reset => reset,
-			-- cpu_finish => cpu_finish,
+			cpu_finish => '1',
 			n_cs => cs_bus(CONSOLE_UART_CS),
 			n_rd => n_rd_bus,
 			n_wr => n_wr_bus,
