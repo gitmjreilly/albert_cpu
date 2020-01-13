@@ -84,8 +84,6 @@ begin
 			word28 when "11100",
 			word29 when "11101",
 			word30 when "11110",
-			word31 when "11111",
-			
-			word0 when others;
+			word31 when "11111";
 	
 end Behavioral;

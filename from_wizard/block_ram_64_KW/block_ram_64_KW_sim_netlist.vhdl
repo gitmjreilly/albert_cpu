@@ -1,10 +1,10 @@
 -- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
--- Date        : Tue Oct  8 22:21:53 2019
+-- Date        : Mon Jan 13 06:34:04 2020
 -- Host        : dev-mint19-vivado running 64-bit Linux Mint 19.2 Tina
 -- Command     : write_vhdl -force -mode funcsim
---               /home/mj/src/albert/vivado/albert/albert.srcs/sources_1/ip/block_ram_64_KW/block_ram_64_KW_sim_netlist.vhdl
+--               /home/mj/hwspi/albert_cpu/from_wizard/block_ram_64_KW/block_ram_64_KW_sim_netlist.vhdl
 -- Design      : block_ram_64_KW
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -154,7 +154,6 @@ use UNISIM.VCOMPONENTS.ALL;
 entity block_ram_64_KW_blk_mem_gen_mux is
   port (
     douta : out STD_LOGIC_VECTOR ( 8 downto 0 );
-    wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     addra : in STD_LOGIC_VECTOR ( 3 downto 0 );
     clka : in STD_LOGIC;
     DOADO : in STD_LOGIC_VECTOR ( 7 downto 0 );
@@ -248,30 +247,28 @@ architecture STRUCTURE of block_ram_64_KW_blk_mem_gen_mux is
   signal \douta[8]_INST_0_i_4_n_0\ : STD_LOGIC;
   signal \douta[8]_INST_0_i_5_n_0\ : STD_LOGIC;
   signal \douta[8]_INST_0_i_6_n_0\ : STD_LOGIC;
-  signal p_2_out : STD_LOGIC;
   signal sel_pipe : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal sel_pipe_d1 : STD_LOGIC_VECTOR ( 3 downto 0 );
 begin
 \douta[0]_INST_0\: unisim.vcomponents.MUXF8
      port map (
       I0 => \douta[0]_INST_0_i_1_n_0\,
       I1 => \douta[0]_INST_0_i_2_n_0\,
       O => douta(0),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[0]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[0]_INST_0_i_3_n_0\,
       I1 => \douta[0]_INST_0_i_4_n_0\,
       O => \douta[0]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[0]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[0]_INST_0_i_5_n_0\,
       I1 => \douta[0]_INST_0_i_6_n_0\,
       O => \douta[0]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[0]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -280,9 +277,9 @@ begin
         port map (
       I0 => DOADO(0),
       I1 => \douta[7]_INST_0_i_1_0\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(0),
       O => \douta[0]_INST_0_i_3_n_0\
     );
@@ -293,9 +290,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(0),
       I1 => \douta[7]_INST_0_i_1_3\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(0),
       O => \douta[0]_INST_0_i_4_n_0\
     );
@@ -306,9 +303,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(0),
       I1 => \douta[7]_INST_0_i_2_1\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(0),
       O => \douta[0]_INST_0_i_5_n_0\
     );
@@ -319,9 +316,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(0),
       I1 => \douta[7]_INST_0_i_2_5\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(0),
       O => \douta[0]_INST_0_i_6_n_0\
     );
@@ -330,21 +327,21 @@ begin
       I0 => \douta[1]_INST_0_i_1_n_0\,
       I1 => \douta[1]_INST_0_i_2_n_0\,
       O => douta(1),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[1]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[1]_INST_0_i_3_n_0\,
       I1 => \douta[1]_INST_0_i_4_n_0\,
       O => \douta[1]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[1]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[1]_INST_0_i_5_n_0\,
       I1 => \douta[1]_INST_0_i_6_n_0\,
       O => \douta[1]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[1]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -353,9 +350,9 @@ begin
         port map (
       I0 => DOADO(1),
       I1 => \douta[7]_INST_0_i_1_0\(1),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(1),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(1),
       O => \douta[1]_INST_0_i_3_n_0\
     );
@@ -366,9 +363,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(1),
       I1 => \douta[7]_INST_0_i_1_3\(1),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(1),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(1),
       O => \douta[1]_INST_0_i_4_n_0\
     );
@@ -379,9 +376,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(1),
       I1 => \douta[7]_INST_0_i_2_1\(1),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(1),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(1),
       O => \douta[1]_INST_0_i_5_n_0\
     );
@@ -392,9 +389,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(1),
       I1 => \douta[7]_INST_0_i_2_5\(1),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(1),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(1),
       O => \douta[1]_INST_0_i_6_n_0\
     );
@@ -403,21 +400,21 @@ begin
       I0 => \douta[2]_INST_0_i_1_n_0\,
       I1 => \douta[2]_INST_0_i_2_n_0\,
       O => douta(2),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[2]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[2]_INST_0_i_3_n_0\,
       I1 => \douta[2]_INST_0_i_4_n_0\,
       O => \douta[2]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[2]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[2]_INST_0_i_5_n_0\,
       I1 => \douta[2]_INST_0_i_6_n_0\,
       O => \douta[2]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[2]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -426,9 +423,9 @@ begin
         port map (
       I0 => DOADO(2),
       I1 => \douta[7]_INST_0_i_1_0\(2),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(2),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(2),
       O => \douta[2]_INST_0_i_3_n_0\
     );
@@ -439,9 +436,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(2),
       I1 => \douta[7]_INST_0_i_1_3\(2),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(2),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(2),
       O => \douta[2]_INST_0_i_4_n_0\
     );
@@ -452,9 +449,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(2),
       I1 => \douta[7]_INST_0_i_2_1\(2),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(2),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(2),
       O => \douta[2]_INST_0_i_5_n_0\
     );
@@ -465,9 +462,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(2),
       I1 => \douta[7]_INST_0_i_2_5\(2),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(2),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(2),
       O => \douta[2]_INST_0_i_6_n_0\
     );
@@ -476,21 +473,21 @@ begin
       I0 => \douta[3]_INST_0_i_1_n_0\,
       I1 => \douta[3]_INST_0_i_2_n_0\,
       O => douta(3),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[3]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[3]_INST_0_i_3_n_0\,
       I1 => \douta[3]_INST_0_i_4_n_0\,
       O => \douta[3]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[3]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[3]_INST_0_i_5_n_0\,
       I1 => \douta[3]_INST_0_i_6_n_0\,
       O => \douta[3]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[3]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -499,9 +496,9 @@ begin
         port map (
       I0 => DOADO(3),
       I1 => \douta[7]_INST_0_i_1_0\(3),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(3),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(3),
       O => \douta[3]_INST_0_i_3_n_0\
     );
@@ -512,9 +509,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(3),
       I1 => \douta[7]_INST_0_i_1_3\(3),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(3),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(3),
       O => \douta[3]_INST_0_i_4_n_0\
     );
@@ -525,9 +522,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(3),
       I1 => \douta[7]_INST_0_i_2_1\(3),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(3),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(3),
       O => \douta[3]_INST_0_i_5_n_0\
     );
@@ -538,9 +535,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(3),
       I1 => \douta[7]_INST_0_i_2_5\(3),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(3),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(3),
       O => \douta[3]_INST_0_i_6_n_0\
     );
@@ -549,21 +546,21 @@ begin
       I0 => \douta[4]_INST_0_i_1_n_0\,
       I1 => \douta[4]_INST_0_i_2_n_0\,
       O => douta(4),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[4]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[4]_INST_0_i_3_n_0\,
       I1 => \douta[4]_INST_0_i_4_n_0\,
       O => \douta[4]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[4]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[4]_INST_0_i_5_n_0\,
       I1 => \douta[4]_INST_0_i_6_n_0\,
       O => \douta[4]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[4]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -572,9 +569,9 @@ begin
         port map (
       I0 => DOADO(4),
       I1 => \douta[7]_INST_0_i_1_0\(4),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(4),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(4),
       O => \douta[4]_INST_0_i_3_n_0\
     );
@@ -585,9 +582,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(4),
       I1 => \douta[7]_INST_0_i_1_3\(4),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(4),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(4),
       O => \douta[4]_INST_0_i_4_n_0\
     );
@@ -598,9 +595,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(4),
       I1 => \douta[7]_INST_0_i_2_1\(4),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(4),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(4),
       O => \douta[4]_INST_0_i_5_n_0\
     );
@@ -611,9 +608,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(4),
       I1 => \douta[7]_INST_0_i_2_5\(4),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(4),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(4),
       O => \douta[4]_INST_0_i_6_n_0\
     );
@@ -622,21 +619,21 @@ begin
       I0 => \douta[5]_INST_0_i_1_n_0\,
       I1 => \douta[5]_INST_0_i_2_n_0\,
       O => douta(5),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[5]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[5]_INST_0_i_3_n_0\,
       I1 => \douta[5]_INST_0_i_4_n_0\,
       O => \douta[5]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[5]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[5]_INST_0_i_5_n_0\,
       I1 => \douta[5]_INST_0_i_6_n_0\,
       O => \douta[5]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[5]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -645,9 +642,9 @@ begin
         port map (
       I0 => DOADO(5),
       I1 => \douta[7]_INST_0_i_1_0\(5),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(5),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(5),
       O => \douta[5]_INST_0_i_3_n_0\
     );
@@ -658,9 +655,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(5),
       I1 => \douta[7]_INST_0_i_1_3\(5),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(5),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(5),
       O => \douta[5]_INST_0_i_4_n_0\
     );
@@ -671,9 +668,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(5),
       I1 => \douta[7]_INST_0_i_2_1\(5),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(5),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(5),
       O => \douta[5]_INST_0_i_5_n_0\
     );
@@ -684,9 +681,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(5),
       I1 => \douta[7]_INST_0_i_2_5\(5),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(5),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(5),
       O => \douta[5]_INST_0_i_6_n_0\
     );
@@ -695,21 +692,21 @@ begin
       I0 => \douta[6]_INST_0_i_1_n_0\,
       I1 => \douta[6]_INST_0_i_2_n_0\,
       O => douta(6),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[6]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[6]_INST_0_i_3_n_0\,
       I1 => \douta[6]_INST_0_i_4_n_0\,
       O => \douta[6]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[6]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[6]_INST_0_i_5_n_0\,
       I1 => \douta[6]_INST_0_i_6_n_0\,
       O => \douta[6]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[6]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -718,9 +715,9 @@ begin
         port map (
       I0 => DOADO(6),
       I1 => \douta[7]_INST_0_i_1_0\(6),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(6),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(6),
       O => \douta[6]_INST_0_i_3_n_0\
     );
@@ -731,9 +728,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(6),
       I1 => \douta[7]_INST_0_i_1_3\(6),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(6),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(6),
       O => \douta[6]_INST_0_i_4_n_0\
     );
@@ -744,9 +741,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(6),
       I1 => \douta[7]_INST_0_i_2_1\(6),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(6),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(6),
       O => \douta[6]_INST_0_i_5_n_0\
     );
@@ -757,9 +754,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(6),
       I1 => \douta[7]_INST_0_i_2_5\(6),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(6),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(6),
       O => \douta[6]_INST_0_i_6_n_0\
     );
@@ -768,21 +765,21 @@ begin
       I0 => \douta[7]_INST_0_i_1_n_0\,
       I1 => \douta[7]_INST_0_i_2_n_0\,
       O => douta(7),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[7]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[7]_INST_0_i_3_n_0\,
       I1 => \douta[7]_INST_0_i_4_n_0\,
       O => \douta[7]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[7]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[7]_INST_0_i_5_n_0\,
       I1 => \douta[7]_INST_0_i_6_n_0\,
       O => \douta[7]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[7]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -791,9 +788,9 @@ begin
         port map (
       I0 => DOADO(7),
       I1 => \douta[7]_INST_0_i_1_0\(7),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_1\(7),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(7),
       O => \douta[7]_INST_0_i_3_n_0\
     );
@@ -804,9 +801,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_1_2\(7),
       I1 => \douta[7]_INST_0_i_1_3\(7),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_1_4\(7),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_1_5\(7),
       O => \douta[7]_INST_0_i_4_n_0\
     );
@@ -817,9 +814,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_0\(7),
       I1 => \douta[7]_INST_0_i_2_1\(7),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_2\(7),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_3\(7),
       O => \douta[7]_INST_0_i_5_n_0\
     );
@@ -830,9 +827,9 @@ begin
         port map (
       I0 => \douta[7]_INST_0_i_2_4\(7),
       I1 => \douta[7]_INST_0_i_2_5\(7),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[7]_INST_0_i_2_6\(7),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[7]_INST_0_i_2_7\(7),
       O => \douta[7]_INST_0_i_6_n_0\
     );
@@ -841,21 +838,21 @@ begin
       I0 => \douta[8]_INST_0_i_1_n_0\,
       I1 => \douta[8]_INST_0_i_2_n_0\,
       O => douta(8),
-      S => sel_pipe_d1(3)
+      S => sel_pipe(3)
     );
 \douta[8]_INST_0_i_1\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[8]_INST_0_i_3_n_0\,
       I1 => \douta[8]_INST_0_i_4_n_0\,
       O => \douta[8]_INST_0_i_1_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[8]_INST_0_i_2\: unisim.vcomponents.MUXF7
      port map (
       I0 => \douta[8]_INST_0_i_5_n_0\,
       I1 => \douta[8]_INST_0_i_6_n_0\,
       O => \douta[8]_INST_0_i_2_n_0\,
-      S => sel_pipe_d1(2)
+      S => sel_pipe(2)
     );
 \douta[8]_INST_0_i_3\: unisim.vcomponents.LUT6
     generic map(
@@ -864,9 +861,9 @@ begin
         port map (
       I0 => DOPADOP(0),
       I1 => \douta[8]_INST_0_i_1_0\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[8]_INST_0_i_1_1\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => ram_douta(8),
       O => \douta[8]_INST_0_i_3_n_0\
     );
@@ -877,9 +874,9 @@ begin
         port map (
       I0 => \douta[8]_INST_0_i_1_2\(0),
       I1 => \douta[8]_INST_0_i_1_3\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[8]_INST_0_i_1_4\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[8]_INST_0_i_1_5\(0),
       O => \douta[8]_INST_0_i_4_n_0\
     );
@@ -890,9 +887,9 @@ begin
         port map (
       I0 => \douta[8]_INST_0_i_2_0\(0),
       I1 => \douta[8]_INST_0_i_2_1\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[8]_INST_0_i_2_2\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[8]_INST_0_i_2_3\(0),
       O => \douta[8]_INST_0_i_5_n_0\
     );
@@ -903,63 +900,11 @@ begin
         port map (
       I0 => \douta[8]_INST_0_i_2_4\(0),
       I1 => \douta[8]_INST_0_i_2_5\(0),
-      I2 => sel_pipe_d1(1),
+      I2 => sel_pipe(1),
       I3 => \douta[8]_INST_0_i_2_6\(0),
-      I4 => sel_pipe_d1(0),
+      I4 => sel_pipe(0),
       I5 => \douta[8]_INST_0_i_2_7\(0),
       O => \douta[8]_INST_0_i_6_n_0\
-    );
-\no_softecc_norm_sel2.has_mem_regs.WITHOUT_ECC_PIPE.ce_pri.sel_pipe_d1_reg[0]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => clka,
-      CE => '1',
-      D => sel_pipe(0),
-      Q => sel_pipe_d1(0),
-      R => '0'
-    );
-\no_softecc_norm_sel2.has_mem_regs.WITHOUT_ECC_PIPE.ce_pri.sel_pipe_d1_reg[1]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => clka,
-      CE => '1',
-      D => sel_pipe(1),
-      Q => sel_pipe_d1(1),
-      R => '0'
-    );
-\no_softecc_norm_sel2.has_mem_regs.WITHOUT_ECC_PIPE.ce_pri.sel_pipe_d1_reg[2]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => clka,
-      CE => '1',
-      D => sel_pipe(2),
-      Q => sel_pipe_d1(2),
-      R => '0'
-    );
-\no_softecc_norm_sel2.has_mem_regs.WITHOUT_ECC_PIPE.ce_pri.sel_pipe_d1_reg[3]\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => clka,
-      CE => '1',
-      D => sel_pipe(3),
-      Q => sel_pipe_d1(3),
-      R => '0'
-    );
-\no_softecc_sel_reg.ce_pri.sel_pipe[3]_i_1\: unisim.vcomponents.LUT1
-    generic map(
-      INIT => X"1"
-    )
-        port map (
-      I0 => wea(0),
-      O => p_2_out
     );
 \no_softecc_sel_reg.ce_pri.sel_pipe_reg[0]\: unisim.vcomponents.FDRE
     generic map(
@@ -967,7 +912,7 @@ begin
     )
         port map (
       C => clka,
-      CE => p_2_out,
+      CE => '1',
       D => addra(0),
       Q => sel_pipe(0),
       R => '0'
@@ -978,7 +923,7 @@ begin
     )
         port map (
       C => clka,
-      CE => p_2_out,
+      CE => '1',
       D => addra(1),
       Q => sel_pipe(1),
       R => '0'
@@ -989,7 +934,7 @@ begin
     )
         port map (
       C => clka,
-      CE => p_2_out,
+      CE => '1',
       D => addra(2),
       Q => sel_pipe(2),
       R => '0'
@@ -1000,7 +945,7 @@ begin
     )
         port map (
       C => clka,
-      CE => p_2_out,
+      CE => '1',
       D => addra(3),
       Q => sel_pipe(3),
       R => '0'
@@ -1039,7 +984,7 @@ architecture STRUCTURE of block_ram_64_KW_blk_mem_gen_prim_wrapper is
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -1210,8 +1155,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -1245,7 +1190,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -1304,7 +1249,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -1475,8 +1420,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -1510,7 +1455,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -1558,7 +1503,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -1729,8 +1674,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -1764,7 +1709,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -1812,7 +1757,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -1983,8 +1928,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2018,7 +1963,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -2066,7 +2011,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -2237,8 +2182,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2272,7 +2217,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -2320,7 +2265,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -2491,8 +2436,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2526,7 +2471,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -2574,7 +2519,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -2745,8 +2690,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2780,7 +2725,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -2828,7 +2773,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -2999,8 +2944,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -3034,7 +2979,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -3102,7 +3047,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -3273,8 +3218,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -3303,7 +3248,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -3318,7 +3263,7 @@ begin
     );
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -3489,8 +3434,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -3520,7 +3465,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -3577,7 +3522,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -3748,8 +3693,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -3778,7 +3723,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -3793,7 +3738,7 @@ begin
     );
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -3964,8 +3909,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -3995,7 +3940,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -4052,7 +3997,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -4223,8 +4168,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -4253,7 +4198,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -4268,7 +4213,7 @@ begin
     );
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -4439,8 +4384,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -4470,7 +4415,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -4527,7 +4472,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -4698,8 +4643,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -4728,7 +4673,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -4743,7 +4688,7 @@ begin
     );
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -4914,8 +4859,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -4945,7 +4890,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -5002,7 +4947,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -5173,8 +5118,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -5203,7 +5148,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -5218,7 +5163,7 @@ begin
     );
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -5389,8 +5334,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -5420,7 +5365,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -5468,7 +5413,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -5639,8 +5584,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -5674,7 +5619,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -5742,7 +5687,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -5913,8 +5858,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -5943,7 +5888,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -5958,7 +5903,7 @@ begin
     );
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -6129,8 +6074,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -6160,7 +6105,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -6217,7 +6162,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -6388,8 +6333,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -6418,7 +6363,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_B_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -6433,7 +6378,7 @@ begin
     );
 \DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -6604,8 +6549,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -6635,7 +6580,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.CASCADED_PRIM36.ram_T_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -6683,7 +6628,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -6854,8 +6799,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -6889,7 +6834,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -6948,7 +6893,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -7119,8 +7064,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -7154,7 +7099,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -7202,7 +7147,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -7373,8 +7318,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -7408,7 +7353,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -7456,7 +7401,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -7627,8 +7572,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -7662,7 +7607,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -7710,7 +7655,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -7881,8 +7826,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -7916,7 +7861,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -7964,7 +7909,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -8135,8 +8080,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -8170,7 +8115,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -8229,7 +8174,7 @@ architecture STRUCTURE of \block_ram_64_KW_blk_mem_gen_prim_wrapper__parameteriz
 begin
 \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\: unisim.vcomponents.RAMB36E1
     generic map(
-      DOA_REG => 1,
+      DOA_REG => 0,
       DOB_REG => 0,
       EN_ECC_READ => false,
       EN_ECC_WRITE => false,
@@ -8400,8 +8345,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "READ_FIRST",
+      WRITE_MODE_B => "READ_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -8435,7 +8380,7 @@ begin
       INJECTDBITERR => '0',
       INJECTSBITERR => '0',
       RDADDRECC(8 downto 0) => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_RDADDRECC_UNCONNECTED\(8 downto 0),
-      REGCEAREGCE => '1',
+      REGCEAREGCE => '0',
       REGCEB => '0',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
@@ -9424,8 +9369,7 @@ begin
       \douta[8]_INST_0_i_2_5\(0) => \ramloop[14].ram.r_n_8\,
       \douta[8]_INST_0_i_2_6\(0) => \ramloop[13].ram.r_n_8\,
       \douta[8]_INST_0_i_2_7\(0) => \ramloop[12].ram.r_n_8\,
-      ram_douta(8 downto 0) => ram_douta(8 downto 0),
-      wea(0) => wea(0)
+      ram_douta(8 downto 0) => ram_douta(8 downto 0)
     );
 \ramloop[0].ram.r\: entity work.block_ram_64_KW_blk_mem_gen_prim_width
      port map (
@@ -9914,7 +9858,7 @@ entity block_ram_64_KW_blk_mem_gen_v8_4_3 is
   attribute C_EN_SLEEP_PIN : integer;
   attribute C_EN_SLEEP_PIN of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is 0;
   attribute C_EST_POWER_SUMMARY : string;
-  attribute C_EST_POWER_SUMMARY of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is "Estimated Power for IP     :     16.335476 mW";
+  attribute C_EST_POWER_SUMMARY of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is "Estimated Power for IP     :     20.384998 mW";
   attribute C_FAMILY : string;
   attribute C_FAMILY of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is "artix7";
   attribute C_HAS_AXI_ID : integer;
@@ -9926,7 +9870,7 @@ entity block_ram_64_KW_blk_mem_gen_v8_4_3 is
   attribute C_HAS_INJECTERR : integer;
   attribute C_HAS_INJECTERR of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is 0;
   attribute C_HAS_MEM_OUTPUT_REGS_A : integer;
-  attribute C_HAS_MEM_OUTPUT_REGS_A of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is 1;
+  attribute C_HAS_MEM_OUTPUT_REGS_A of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is 0;
   attribute C_HAS_MEM_OUTPUT_REGS_B : integer;
   attribute C_HAS_MEM_OUTPUT_REGS_B of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is 0;
   attribute C_HAS_MUX_OUTPUT_REGS_A : integer;
@@ -10008,7 +9952,7 @@ entity block_ram_64_KW_blk_mem_gen_v8_4_3 is
   attribute C_WRITE_DEPTH_B : integer;
   attribute C_WRITE_DEPTH_B of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is 65536;
   attribute C_WRITE_MODE_A : string;
-  attribute C_WRITE_MODE_A of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is "NO_CHANGE";
+  attribute C_WRITE_MODE_A of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is "READ_FIRST";
   attribute C_WRITE_MODE_B : string;
   attribute C_WRITE_MODE_B of block_ram_64_KW_blk_mem_gen_v8_4_3 : entity is "WRITE_FIRST";
   attribute C_WRITE_WIDTH_A : integer;
@@ -10217,7 +10161,7 @@ architecture STRUCTURE of block_ram_64_KW is
   attribute C_EN_SLEEP_PIN : integer;
   attribute C_EN_SLEEP_PIN of U0 : label is 0;
   attribute C_EST_POWER_SUMMARY : string;
-  attribute C_EST_POWER_SUMMARY of U0 : label is "Estimated Power for IP     :     16.335476 mW";
+  attribute C_EST_POWER_SUMMARY of U0 : label is "Estimated Power for IP     :     20.384998 mW";
   attribute C_FAMILY : string;
   attribute C_FAMILY of U0 : label is "artix7";
   attribute C_HAS_AXI_ID : integer;
@@ -10229,7 +10173,7 @@ architecture STRUCTURE of block_ram_64_KW is
   attribute C_HAS_INJECTERR : integer;
   attribute C_HAS_INJECTERR of U0 : label is 0;
   attribute C_HAS_MEM_OUTPUT_REGS_A : integer;
-  attribute C_HAS_MEM_OUTPUT_REGS_A of U0 : label is 1;
+  attribute C_HAS_MEM_OUTPUT_REGS_A of U0 : label is 0;
   attribute C_HAS_MEM_OUTPUT_REGS_B : integer;
   attribute C_HAS_MEM_OUTPUT_REGS_B of U0 : label is 0;
   attribute C_HAS_MUX_OUTPUT_REGS_A : integer;
@@ -10311,7 +10255,7 @@ architecture STRUCTURE of block_ram_64_KW is
   attribute C_WRITE_DEPTH_B : integer;
   attribute C_WRITE_DEPTH_B of U0 : label is 65536;
   attribute C_WRITE_MODE_A : string;
-  attribute C_WRITE_MODE_A of U0 : label is "NO_CHANGE";
+  attribute C_WRITE_MODE_A of U0 : label is "READ_FIRST";
   attribute C_WRITE_MODE_B : string;
   attribute C_WRITE_MODE_B of U0 : label is "WRITE_FIRST";
   attribute C_WRITE_WIDTH_A : integer;

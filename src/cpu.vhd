@@ -240,6 +240,8 @@ constant DummyReg : std_logic_vector := "0000000000000000";
 constant WordAll0 : std_logic_vector := "0000000000000000";
 constant INTERRUPT_VECTOR : std_logic_vector := "00100001";
 
+signal n_my_clock : std_logic;
+
 begin	 
 
 four_digits <= display_selector_output;
@@ -260,12 +262,13 @@ mir_b <= 		"000000000000" & MIROut(3 downto 0);
 ---
 -- TODO ensure MIR is set at beginning of AST uCode cycle (FE) by using not(my_clock)  - DONE
 -- TODO remove enable (formerly set by cpu_start) - DONE
+n_my_clock <= not(my_clock);
 MIR_REG : entity work.compound_register  
 	generic map(
 		width => 41
 	)
 	port map (
-		clk => not(my_clock) ,
+		clk => n_my_clock,
 		reset => reset ,
 		in1   => ControlStoreOut,
 		out1  => MIROUt ,
@@ -585,8 +588,8 @@ u_display_selector : display_selector port map (
 	OUTPUT => Display_Selector_Output,
 
 	word0 => DummyReg,
-	word1 => DummyReg,
-	word2 => DummyReg,
+	word1 => X"1234",
+	word2 => X"ABCD",
 	word3 => DummyReg,
 	word4 => DummyReg,
 

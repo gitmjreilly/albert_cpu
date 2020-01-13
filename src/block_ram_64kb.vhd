@@ -92,7 +92,7 @@ begin
 	process(system_clock, reset, state_next, is_busy, is_busy_next, reg_0_next, reg_1_next)
 	begin
 		if (reset = '1') then
-			state_reg <= state_a;
+			state_reg <= state_b;
          is_busy <= '0';
 			reg_0 <= X"0071";
 			reg_1 <= X"0999";
@@ -119,10 +119,10 @@ begin
 
 
 		case state_reg is
-			when state_a =>
-				if previous_cpu_clock = '1' AND cpu_clock = '0' then
-					state_next <= state_b;
-				end if;
+--			when state_a =>
+--				if previous_cpu_clock = '1' AND cpu_clock = '0' then
+--					state_next <= state_b;
+--				end if;
 
 
 			when state_b =>
@@ -135,10 +135,10 @@ begin
 
 
 			when state_c =>
-				if cpu_clock = '0' then
+				-- if cpu_clock = '0' then
 					state_next <= state_b;
 					is_busy_next <= '0';
-				end if;
+				-- end if;
 
 
 
@@ -159,7 +159,7 @@ begin
 	process(system_clock, reset, r_state_next, val_next)
 	begin
 		if (reset = '1') then
-			r_state_reg <= state_a;
+			r_state_reg <= state_b;
 			val_reg <= X"AAAA";
 		elsif (rising_edge(system_clock)) then
 			val_reg <= val_next;
@@ -170,28 +170,26 @@ begin
 
 	
 	process (
-		r_state_reg, val_reg, previous_cpu_clock, cpu_clock, is_read_in_progress, addr_bus, reg_0, reg_1)
+		r_state_reg, val_reg, previous_cpu_clock, cpu_clock, is_read_in_progress, addr_bus, reg_0, reg_1, douta)
 	begin
 		r_state_next <= r_state_reg;
 		val_next <= val_reg;
 
 		case r_state_reg is
-			when state_a =>
-				if previous_cpu_clock = '1' AND cpu_clock = '0' then
-					r_state_next <= state_b;
-				end if;
+--			when state_a =>
+--				if previous_cpu_clock = '1' AND cpu_clock = '0' then
+--					r_state_next <= state_b;
+--				end if;
 
 			when state_b =>
 				if previous_cpu_clock = '0' AND cpu_clock = '1' AND is_read_in_progress = '1'  then
 					r_state_next <= state_c;
+				end if;
+				
+        	when state_c =>
 					val_next <= douta; -- Should val_next be set here or in state_c?
-				end if;
-
-			when state_c =>
-				-- val_next <= douta;
-				if cpu_clock = '0' then
+					-- val_next <= X"AB12";
 					r_state_next <= state_b;
-				end if;
 
 			when others =>
 				r_state_next <= r_state_reg;

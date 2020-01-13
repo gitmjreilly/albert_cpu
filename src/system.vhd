@@ -27,10 +27,10 @@ entity system is port (
 	 fetch_ind : out std_logic;
 
 
-	-- Debugging features from lacombe cpu
-	-- SevenSegAnodes : out std_logic_vector(3 downto 0);
-	-- SevenSegSegments : out std_logic_vector(7 downto 0);
-	-- address_switches : in std_logic_vector(7 downto 0);
+	-- 7 segment debugging display
+	SevenSegAnodes : out std_logic_vector(3 downto 0);
+	SevenSegSegments : out std_logic_vector(7 downto 0);
+	address_switches : in std_logic_vector(7 downto 0);
 	
 
 	uart_tx_to_usb : out std_logic;
@@ -113,9 +113,9 @@ architecture structural of system is
 	
 
 	---------------------------------------------------------------------
-	signal cpu_clock, system_clock : std_logic; 
+	signal cpu_clock, system_clock, n_system_clock : std_logic; 
 	signal four_digits : std_logic_vector(15 downto 0);
-	-- signal clk_counter : std_logic_vector(23 downto 0); -- OK Driven by clk
+	signal segment_clock_counter : std_logic_vector(23 downto 0); -- OK Driven by clk
 
 	signal cs_bus : std_logic_vector(15 downto 0);
 
@@ -145,7 +145,7 @@ architecture structural of system is
 	signal in_bit_0 : std_logic;
 	signal in_bit_2 : std_logic;
 	
-	
+	signal clock_counter : std_logic_vector(1 downto 0);
 	
 	---------------------------------------------------------------------
 
@@ -153,20 +153,42 @@ architecture structural of system is
 	signal n_ind : std_logic;
 	signal z_ind : std_logic;
 	-- signal fetch_ind :  std_logic;
-	signal address_switches : std_logic_vector(4 downto 0);
 	signal data_bus : std_logic_vector(15 downto 0);
 	signal addr_bus : std_logic_vector(25 downto 0);
 	
 	signal test_counter : std_logic_vector(23 downto 0);
 	
 begin
-   u_my_clocks: entity work.clock_100_50_25_clk_wiz
-		port map (
-			clk_in1=> clk,
-			clk_out1 => system_clock,
-			clk_out2 => cpu_clock,
-			reset  => reset
-		);	
+--   u_my_clocks: entity work.clock_100_50_25_clk_wiz
+--		port map (
+--			clk_in1=> clk,
+--			clk_out1 => system_clock,
+--			clk_out2 => cpu_clock,
+--			reset  => reset
+--		);	
+
+u_my_clocks : entity work.clk_wiz_100_20_1
+   port map ( 
+   clk_out1 => system_clock,
+   reset => reset,
+   clk_in1 => clk
+ );
+
+ n_system_clock <= not (system_clock);
+
+	-----------------------------------------------------------------
+	--
+	process(n_system_clock, reset, clock_counter)
+	begin
+		if (reset = '1') then
+			clock_counter <= "00";
+		elsif (rising_edge(n_system_clock)) then
+			clock_counter <= clock_counter + 1;
+		end if;
+	end process;
+	-----------------------------------------------------------------
+	
+	cpu_clock <= clock_counter(0);
 
 
 	---------------------------------------------------------------------
@@ -195,6 +217,20 @@ begin
    addr_bus <= "000000" & local_addr_bus(19 downto 0);
 
 
+   
+	-----------------------------------------------------------------
+	--
+	process(system_clock, reset, segment_clock_counter)
+	begin
+		if (reset = '1') then
+			segment_clock_counter <= (others => '0');
+		elsif (rising_edge(system_clock)) then
+			segment_clock_counter <= segment_clock_counter + 1;
+		end if;
+	end process;
+	-----------------------------------------------------------------
+	
+
 	---------------------------------------------------------------------
 	--
 	-- This is the ganged (4) Seven Segment Driver.
@@ -202,17 +238,17 @@ begin
 	-- and produces the appropriate signals to drive
 	-- the 4 seven segment LED display on the Digilent spartan 3 board.
 	--
-	-- DigitDriver : entity work.SevenSegDriver 	
-		-- port map (	
-			-- four_digits (15 downto 12),			-- High Digit
-			-- four_digits (11 downto 8),
-			-- four_digits (7 downto 4),
-			-- four_digits (3 downto 0),
-			-- clk_counter(15), -- This is OK as - is for digit driver
-			-- my_clock, -- This is probably wrong - used to get build to work after switch to DCM
-			-- SevenSegSegments, 
-			-- SevenSegAnodes
-		-- );
+	 DigitDriver : entity work.SevenSegDriver 	
+		 port map (	
+		    reset,
+			 four_digits (15 downto 12),			-- High Digit
+			 four_digits (11 downto 8),
+			 four_digits (7 downto 4),
+			 four_digits (3 downto 0),
+			 segment_clock_counter(15), -- This is OK as - is for digit driver
+			 SevenSegSegments, 
+			 SevenSegAnodes
+		 );
 	---------------------------------------------------------------------
 
 
@@ -316,25 +352,25 @@ begin
    -- TODO restore output_port to system
    -- TODO remove cpu_finish from output_port
    -- TODO change my_clock to system_clock, and add cpu_clock
---    u_output_port_0: entity work.mem_based_output_port 
---        port map (
---            reset => reset,
---            clk => my_clock,
---            cpu_finish => cpu_finish,
---            n_cs => cs_bus(BLANK_20_CS),
---            n_wr => n_wr_bus,
---            address_bus => local_addr_bus(2 downto 0),
---            in_bit => data_bus(0),
---            
---            out_bit_0 => out_bit_0,
---            out_bit_1 => out_bit_1,
---            out_bit_2 => out_bit_2,
---            out_bit_3 => out_bit_3,
---            out_bit_4 => out_bit_4,
---            out_bit_5 => out_bit_5,
---            out_bit_6 => out_bit_6,
---            out_bit_7 => out_bit_7
---    );
+    u_output_port_0: entity work.mem_based_output_port 
+        port map (
+            reset => reset,
+            cpu_clock => cpu_clock,
+            system_clock => system_clock,
+            n_cs => cs_bus(BLANK_20_CS),
+            n_wr => n_wr_bus,
+            address_bus => local_addr_bus(2 downto 0),
+            in_bit => data_bus(0),
+            
+            out_bit_0 => out_bit_0,
+            out_bit_1 => out_bit_1,
+            out_bit_2 => out_bit_2,
+            out_bit_3 => out_bit_3,
+            out_bit_4 => out_bit_4,
+            out_bit_5 => out_bit_5,
+            out_bit_6 => out_bit_6,
+            out_bit_7 => out_bit_7
+    );
 
     ---------------------------------------------------------------------
 
@@ -380,17 +416,21 @@ begin
    -- TODO change my_clock to system_clock, add  cpu_clock to detect AST end of uCode cycle (RE)
 	console_uart: entity work.uart_w_fifo
 		port map ( 
-			clk  => system_clock,
+			system_clock  => system_clock,
+			cpu_clock => cpu_clock,
 			rx => uart_0_rx,
 			tx => uart_0_tx,
 			reset => reset,
-			cpu_finish => '1',
 			n_cs => cs_bus(CONSOLE_UART_CS),
 			n_rd => n_rd_bus,
 			n_wr => n_wr_bus,
 			data_bus => data_bus,
 			addr_bus => local_addr_bus(3 downto 0)
 		);
+
+
+
+
 
 
     process (sw_0, uart_rx_from_usb, uart_0_tx, JA7)
