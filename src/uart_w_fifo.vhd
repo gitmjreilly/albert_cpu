@@ -146,11 +146,12 @@ begin
 	-----------------------------------------------------------------
 	ticker: entity work.mod_m 
 		generic map(
-			N => 5, -- num bits
+			N => 9, -- num bits
 			-- 50 * 10^6 / (16 * 19200)
 			-- M => 163  -- MOD M (Should lead to 19200 bps w/50MHz clock)
-			M => 27  -- MOD M (27 Should lead to 115200 bps w/50MHz clock)
+			--M => 27  -- MOD M (27 Should lead to 115200 bps w/50MHz clock)
 			-- M => 2 -- for simulation only
+			M => 130 -- 9600 bps at 20MHz
 		)
 		port map(
 			clk => system_clock, 
@@ -417,10 +418,15 @@ begin
 		dec_num_bytes_in_rx_fifo_tick <= '0';
 		
 		case read_state_reg is 
-			when read_state_idle => 
+		
+		   when read_state_idle =>
+				if previous_cpu_clock = '0' AND cpu_clock = '1' AND is_rx_fifo_read_in_progress = '1'  then
+   		      read_state_next <= read_state_0;
+            end if;
+		
+			when read_state_0 => 
 				read_state_next <= read_state_idle;
 
-				if previous_cpu_clock = '0' AND cpu_clock = '1' AND is_rx_fifo_read_in_progress = '1'  then
 
 					case addr_bus is 
 					
@@ -478,7 +484,6 @@ begin
 							
 					end case;
 
-				end if;
 				
             when others =>
                val_next <= X"4321";
