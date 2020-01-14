@@ -55,7 +55,7 @@
 --  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 --   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 ------------------------------------------------------------------------------
--- clk_out1____50.000______0.000______50.0______151.636_____98.575
+-- clk_out1____20.000______0.000______50.0______193.154____109.126
 --
 ------------------------------------------------------------------------------
 -- Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -65,7 +65,7 @@
 
 -- The following code must appear in the VHDL architecture header:
 ------------- Begin Cut here for COMPONENT Declaration ------ COMP_TAG
-component clk_wiz_100_50
+component clk_wiz_100_20_1
 port
  (-- Clock in ports
   -- Clock out ports
@@ -80,7 +80,7 @@ end component;
 -- The following code must appear in the VHDL architecture
 -- body. Substitute your own instance name and net names.
 ------------- Begin Cut here for INSTANTIATION Template ----- INST_TAG
-your_instance_name : clk_wiz_100_50
+your_instance_name : clk_wiz_100_20_1
    port map ( 
   -- Clock out ports  
    clk_out1 => clk_out1,
