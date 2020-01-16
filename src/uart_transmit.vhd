@@ -151,7 +151,7 @@ begin
 			-- M => 163  -- MOD M (Should lead to 19200 bps w/50MHz clock)
 			--M => 27  -- MOD M (27 Should lead to 115200 bps w/50MHz clock)
 			-- M => 2 -- for simulation only
-			M => 130 -- 9600 bps at 20MHz
+			M => 130 -- 9600 bps at 20MHz ; 20* 10^6 / 16 / 9600
 		)
 		port map(
 			clk => system_clock, 
